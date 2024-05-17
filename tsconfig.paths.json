@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
     "baseUrl": "./",
-    "paths": {}
+    "paths": {
+      "@core/*": ["./src/core/*"],
+      "@adapter/*": ["./src/adapter/*"]
+    }
   }
 }
