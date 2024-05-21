@@ -80,7 +80,7 @@ export const orderRoutes: IRouteProps[] = [
       _response: ExpressResponse,
       next: ExpressNextFuction,
     ) => next(),
-    handler: 'finalizarPedido',
+    handler: 'makeCheckout',
   },
   {
     resource: '/pedidos',
@@ -90,6 +90,6 @@ export const orderRoutes: IRouteProps[] = [
       _response: ExpressResponse,
       next: ExpressNextFuction,
     ) => next(),
-    handler: 'consultarPedido',
+    handler: 'searchOrders',
   },
 ]

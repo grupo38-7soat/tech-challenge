@@ -1,11 +1,11 @@
 import { Request as ExpressRequest, Response as ExpressResponse } from 'express'
-import { IProductController } from './types/controllers'
 import {
   ICreateProductUseCase,
   IRemoveProductUseCase,
   ISearchProductUseCase,
   IUpdateProductUseCase,
-} from '@core/application/use-cases/types/product'
+} from '@core/application/use-cases'
+import { IProductController } from './types/controllers'
 import { HttpResponseHelper } from '../helpers'
 
 export class ProductController implements IProductController {

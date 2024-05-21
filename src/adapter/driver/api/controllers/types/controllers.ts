@@ -30,12 +30,12 @@ export interface IProductController {
   ): Promise<ExpressResponse>
 }
 
-export interface IPedidoController {
-  finalizarPedido(
+export interface IOrderController {
+  makeCheckout(
     request: ExpressRequest,
     response: ExpressResponse,
   ): Promise<ExpressResponse>
-  consultarPedido(
+  searchOrders(
     request: ExpressRequest,
     response: ExpressResponse,
   ): Promise<ExpressResponse>

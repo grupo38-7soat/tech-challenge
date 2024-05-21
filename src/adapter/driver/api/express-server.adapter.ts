@@ -5,7 +5,7 @@ import { IHttpServer } from './types/http-server'
 import {
   ICustomerController,
   IProductController,
-  IPedidoController,
+  IOrderController,
 } from './controllers/types/controllers'
 import { customerRoutes, productRoutes, orderRoutes } from './routes'
 
@@ -16,7 +16,7 @@ export class ExpressHttpServerAdapter implements IHttpServer {
   constructor(
     private readonly customerController: ICustomerController,
     private readonly productController: IProductController,
-    private readonly pedidoController: IPedidoController,
+    private readonly orderController: IOrderController,
   ) {
     this.app = express()
     this.app.use(express.json())
@@ -66,7 +66,7 @@ export class ExpressHttpServerAdapter implements IHttpServer {
       this.router[route.method](
         route.resource,
         route.middleware,
-        this.pedidoController[route.handler].bind(this.pedidoController),
+        this.orderController[route.handler].bind(this.orderController),
       )
     })
   }

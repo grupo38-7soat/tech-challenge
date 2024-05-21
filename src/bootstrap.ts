@@ -3,13 +3,15 @@ import {
   CreateCustomerUseCase,
   CreateProductUseCase,
   GetCustomerByDocumentUseCase,
+  MakeCheckoutUseCase,
   RemoveProductUseCase,
+  SearchOrdersUseCase,
   SearchProductUseCase,
   UpdateProductUseCase,
 } from '@core/application/use-cases'
 import {
   CustomerController,
-  PedidoController,
+  OrderController,
   ProductController,
 } from '@adapter/driver/api/controllers'
 import { ExpressHttpServerAdapter } from '@adapter/driver/api/express-server.adapter'
@@ -22,6 +24,8 @@ const createProductUseCase = new CreateProductUseCase()
 const updateProductUseCase = new UpdateProductUseCase()
 const searchProductUseCase = new SearchProductUseCase()
 const removeProductUseCase = new RemoveProductUseCase()
+const makeCheckoutUseCase = new MakeCheckoutUseCase()
+const searchOrdersUseCase = new SearchOrdersUseCase()
 // controllers
 const customerController = new CustomerController(
   createCustomerUseCase,
@@ -33,10 +37,13 @@ const productController = new ProductController(
   searchProductUseCase,
   removeProductUseCase,
 )
-const pedidoController = new PedidoController()
+const orderController = new OrderController(
+  makeCheckoutUseCase,
+  searchOrdersUseCase,
+)
 const server: IHttpServer = new ExpressHttpServerAdapter(
   customerController,
   productController,
-  pedidoController,
+  orderController,
 )
 server.run(globalEnvs.serverPort)
