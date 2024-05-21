@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: tech_challenge
+      POSTGRES_PASSWORD: tech_challenge_123
+      POSTGRES_DB: techchallengedb
+    volumes:
+     #- postgres_data:/var/lib/postgresql/data # Change it
+     - ./database:/docker-entrypoint-initdb.d/
+
+  node:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    environment:
+      DB_HOST: postgres:5432
+      DB_USER: tech_challenge
+      DB_PASSWORD: tech_challenge_123
+      DB_NAME: techchallengedb
+
+#volumes:
+#  postgres_data:
