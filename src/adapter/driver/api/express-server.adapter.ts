@@ -3,7 +3,7 @@ import swaggerUI from 'swagger-ui-express'
 import swaggerSpecs from '@adapter/driver/api/config/swagger/swagger.config'
 import { IHttpServer } from './types/http-server'
 import {
-  IClienteController,
+  ICustomerController,
   IProdutoController,
   IPedidoController,
 } from './controllers/types/controllers'
@@ -14,7 +14,7 @@ export class ExpressHttpServerAdapter implements IHttpServer {
   router: Router
 
   constructor(
-    private readonly clienteController: IClienteController,
+    private readonly customerController: ICustomerController,
     private readonly produtoController: IProdutoController,
     private readonly pedidoController: IPedidoController,
   ) {
@@ -40,7 +40,7 @@ export class ExpressHttpServerAdapter implements IHttpServer {
       this.router[route.method](
         route.resource,
         route.middleware,
-        this.clienteController[route.handler],
+        this.customerController[route.handler].bind(this.customerController),
       )
     })
   }
@@ -53,7 +53,7 @@ export class ExpressHttpServerAdapter implements IHttpServer {
       this.router[route.method](
         route.resource,
         route.middleware,
-        this.produtoController[route.handler],
+        this.produtoController[route.handler].bind(this.produtoController),
       )
     })
   }
@@ -66,7 +66,7 @@ export class ExpressHttpServerAdapter implements IHttpServer {
       this.router[route.method](
         route.resource,
         route.middleware,
-        this.pedidoController[route.handler],
+        this.pedidoController[route.handler].bind(this.pedidoController),
       )
     })
   }

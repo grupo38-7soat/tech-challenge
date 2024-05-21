@@ -3,35 +3,35 @@ import {
   Response as ExpressResponse,
   NextFunction as ExpressNextFuction,
 } from 'express'
-import { IRouteProps } from './types/http-server'
+import { HttpMethod, IRouteProps } from './types/http-server'
 
 export const customerRoutes: IRouteProps[] = [
   {
     resource: '/clientes',
-    method: 'post',
+    method: HttpMethod.POST,
     middleware: (
       _request: ExpressRequest,
       _response: ExpressResponse,
       next: ExpressNextFuction,
     ) => next(),
-    handler: 'criarCliente',
+    handler: 'createCustomer',
   },
   {
-    resource: '/clientes/:cpf',
-    method: 'get',
+    resource: '/clientes/:document',
+    method: HttpMethod.GET,
     middleware: (
       _request: ExpressRequest,
       _response: ExpressResponse,
       next: ExpressNextFuction,
     ) => next(),
-    handler: 'consultarClientePeloCpf',
+    handler: 'getCustomerByDocument',
   },
 ]
 
 export const productRoutes: IRouteProps[] = [
   {
     resource: '/produtos',
-    method: 'post',
+    method: HttpMethod.POST,
     middleware: (
       _request: ExpressRequest,
       _response: ExpressResponse,
@@ -41,7 +41,7 @@ export const productRoutes: IRouteProps[] = [
   },
   {
     resource: '/produtos/:id',
-    method: 'put',
+    method: HttpMethod.PUT,
     middleware: (
       _request: ExpressRequest,
       _response: ExpressResponse,
@@ -51,7 +51,7 @@ export const productRoutes: IRouteProps[] = [
   },
   {
     resource: '/produtos',
-    method: 'get',
+    method: HttpMethod.GET,
     middleware: (
       _request: ExpressRequest,
       _response: ExpressResponse,
@@ -61,7 +61,7 @@ export const productRoutes: IRouteProps[] = [
   },
   {
     resource: '/produtos/:id',
-    method: 'delete',
+    method: HttpMethod.DELETE,
     middleware: (
       _request: ExpressRequest,
       _response: ExpressResponse,
@@ -74,7 +74,7 @@ export const productRoutes: IRouteProps[] = [
 export const orderRoutes: IRouteProps[] = [
   {
     resource: '/checkout',
-    method: 'post',
+    method: HttpMethod.POST,
     middleware: (
       _request: ExpressRequest,
       _response: ExpressResponse,
@@ -84,7 +84,7 @@ export const orderRoutes: IRouteProps[] = [
   },
   {
     resource: '/pedidos',
-    method: 'get',
+    method: HttpMethod.GET,
     middleware: (
       _request: ExpressRequest,
       _response: ExpressResponse,

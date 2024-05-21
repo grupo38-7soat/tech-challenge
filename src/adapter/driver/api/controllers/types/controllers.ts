@@ -1,11 +1,11 @@
 import { Request as ExpressRequest, Response as ExpressResponse } from 'express'
 
-export interface IClienteController {
-  criarCliente(
+export interface ICustomerController {
+  createCustomer(
     request: ExpressRequest,
     response: ExpressResponse,
   ): Promise<ExpressResponse>
-  consultarClientePeloCpf(
+  getCustomerByDocument(
     request: ExpressRequest,
     response: ExpressResponse,
   ): Promise<ExpressResponse>
