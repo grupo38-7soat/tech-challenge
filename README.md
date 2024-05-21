@@ -8,3 +8,4 @@ Para iniciar os serviços com o Docker, utilize o comando abaixo na raiz do repo
 docker compose up -d
 ```
 
+
