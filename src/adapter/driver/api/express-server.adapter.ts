@@ -4,7 +4,7 @@ import swaggerSpecs from '@adapter/driver/api/config/swagger/swagger.config'
 import { IHttpServer } from './types/http-server'
 import {
   ICustomerController,
-  IProdutoController,
+  IProductController,
   IPedidoController,
 } from './controllers/types/controllers'
 import { customerRoutes, productRoutes, orderRoutes } from './routes'
@@ -15,7 +15,7 @@ export class ExpressHttpServerAdapter implements IHttpServer {
 
   constructor(
     private readonly customerController: ICustomerController,
-    private readonly produtoController: IProdutoController,
+    private readonly productController: IProductController,
     private readonly pedidoController: IPedidoController,
   ) {
     this.app = express()
@@ -53,7 +53,7 @@ export class ExpressHttpServerAdapter implements IHttpServer {
       this.router[route.method](
         route.resource,
         route.middleware,
-        this.produtoController[route.handler].bind(this.produtoController),
+        this.productController[route.handler].bind(this.productController),
       )
     })
   }

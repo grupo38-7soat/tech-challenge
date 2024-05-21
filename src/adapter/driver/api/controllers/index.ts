@@ -1,3 +1,3 @@
 export * from './customer.controller'
 export * from './pedido.controller'
-export * from './produto.controller'
+export * from './product.controller'

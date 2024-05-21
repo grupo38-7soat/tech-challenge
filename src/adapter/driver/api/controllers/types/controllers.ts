@@ -11,20 +11,20 @@ export interface ICustomerController {
   ): Promise<ExpressResponse>
 }
 
-export interface IProdutoController {
-  criarProduto(
+export interface IProductController {
+  createProduct(
     request: ExpressRequest,
     response: ExpressResponse,
   ): Promise<ExpressResponse>
-  atualizarProduto(
+  updateProduct(
     request: ExpressRequest,
     response: ExpressResponse,
   ): Promise<ExpressResponse>
-  consultarProduto(
+  searchProduct(
     request: ExpressRequest,
     response: ExpressResponse,
   ): Promise<ExpressResponse>
-  removerProduto(
+  removeProduct(
     request: ExpressRequest,
     response: ExpressResponse,
   ): Promise<ExpressResponse>

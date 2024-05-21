@@ -15,7 +15,7 @@ export class HttpResponseHelper {
     { error, statusCode }: IHttpResponse,
   ): ExpressResponse {
     const { message } = error
-    const { cause } = error
+    const { cause = ExceptionCause.UNKNOWN_EXCEPTION } = error
     console.error(`[ERROR] ${cause}: ${message}`)
     return response.status(statusCode || this.parseExceptionCause(cause)).json({
       error: {

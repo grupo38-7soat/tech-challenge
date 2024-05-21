@@ -37,7 +37,7 @@ export const productRoutes: IRouteProps[] = [
       _response: ExpressResponse,
       next: ExpressNextFuction,
     ) => next(),
-    handler: 'criarProduto',
+    handler: 'createProduct',
   },
   {
     resource: '/produtos/:id',
@@ -47,7 +47,7 @@ export const productRoutes: IRouteProps[] = [
       _response: ExpressResponse,
       next: ExpressNextFuction,
     ) => next(),
-    handler: 'atualizarProduto',
+    handler: 'updateProduct',
   },
   {
     resource: '/produtos',
@@ -57,7 +57,7 @@ export const productRoutes: IRouteProps[] = [
       _response: ExpressResponse,
       next: ExpressNextFuction,
     ) => next(),
-    handler: 'consultarProduto',
+    handler: 'searchProduct',
   },
   {
     resource: '/produtos/:id',
@@ -67,7 +67,7 @@ export const productRoutes: IRouteProps[] = [
       _response: ExpressResponse,
       next: ExpressNextFuction,
     ) => next(),
-    handler: 'removerProduto',
+    handler: 'removeProduct',
   },
 ]
 
