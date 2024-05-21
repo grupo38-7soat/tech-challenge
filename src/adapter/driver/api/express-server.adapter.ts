@@ -1,14 +1,23 @@
 import express, { Express, Router } from 'express'
 import swaggerUI from 'swagger-ui-express'
-import swaggerSpecs from 'src/adapter/driver/api/config/swagger/swagger.config'
+import swaggerSpecs from '@adapter/driver/api/config/swagger/swagger.config'
 import { IHttpServer } from './types/http-server'
-import { serverRoutes } from './routes'
+import {
+  IClienteController,
+  IProdutoController,
+  IPedidoController,
+} from './controllers/types/controllers'
+import { customerRoutes, productRoutes, orderRoutes } from './routes'
 
 export class ExpressHttpServerAdapter implements IHttpServer {
   app: Express
   router: Router
 
-  constructor() {
+  constructor(
+    private readonly clienteController: IClienteController,
+    private readonly produtoController: IProdutoController,
+    private readonly pedidoController: IPedidoController,
+  ) {
     this.app = express()
     this.app.use(express.json())
     this.router = express.Router()
@@ -17,10 +26,49 @@ export class ExpressHttpServerAdapter implements IHttpServer {
   }
 
   private configRoutes(): void {
-    serverRoutes.forEach(route => {
-      this.router[route.method](route.resource, route.middleware, route.handler)
-    })
+    this.configCustomerRoutes()
+    this.configProductRoutes()
+    this.configOrderRoutes()
     this.app.use(this.router)
+  }
+
+  private configCustomerRoutes(): void {
+    customerRoutes.forEach(route => {
+      console.log(
+        `[HttpServer] Rota ${route.method.toUpperCase()} ${route.resource}`,
+      )
+      this.router[route.method](
+        route.resource,
+        route.middleware,
+        this.clienteController[route.handler],
+      )
+    })
+  }
+
+  private configProductRoutes(): void {
+    productRoutes.forEach(route => {
+      console.log(
+        `[HttpServer] Rota ${route.method.toUpperCase()} ${route.resource}`,
+      )
+      this.router[route.method](
+        route.resource,
+        route.middleware,
+        this.produtoController[route.handler],
+      )
+    })
+  }
+
+  private configOrderRoutes(): void {
+    orderRoutes.forEach(route => {
+      console.log(
+        `[HttpServer] Rota ${route.method.toUpperCase()} ${route.resource}`,
+      )
+      this.router[route.method](
+        route.resource,
+        route.middleware,
+        this.pedidoController[route.handler],
+      )
+    })
   }
 
   private configDocumentation(): void {
@@ -29,7 +77,7 @@ export class ExpressHttpServerAdapter implements IHttpServer {
 
   run(port: number): void {
     this.app.listen(port, () => {
-      console.log(`Server running on port ${port}`)
+      console.log(`[HttpServer] Servidor rodando na porta ${port}`)
     })
   }
 }

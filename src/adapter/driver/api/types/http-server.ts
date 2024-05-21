@@ -25,7 +25,7 @@ export type IRouteProps = {
   resource: string
   method: string
   middleware: Function
-  handler: Function
+  handler: string
 }
 
 export interface IHttpServer {
