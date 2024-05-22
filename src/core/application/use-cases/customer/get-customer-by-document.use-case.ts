@@ -29,7 +29,7 @@ export class GetCustomerByDocumentUseCase
       )
     }
     const {
-      id: customerId,
+      id,
       document: customerDocument,
       name,
       email,
@@ -37,7 +37,7 @@ export class GetCustomerByDocumentUseCase
       updatedAt,
     } = customer.toJson()
     return {
-      customerId,
+      id,
       document: customerDocument,
       name,
       email,

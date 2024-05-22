@@ -5,7 +5,7 @@ export type CreateCustomerInput = {
 }
 
 export type CreateCustomerOutput = {
-  customerId: string
+  id: string
 }
 
 export type GetCustomerByDocumentInput = {
@@ -13,7 +13,7 @@ export type GetCustomerByDocumentInput = {
 }
 
 export type GetCustomerByDocumentOutput = {
-  customerId: string
+  id: string
   name: string
   email: string
   document: string

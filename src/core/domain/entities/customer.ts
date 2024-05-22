@@ -23,10 +23,11 @@ export class Customer {
     document: string,
     name: string,
     email: string,
+    id?: string,
     createdAt?: string,
     updatedAt?: string,
   ) {
-    this.setId()
+    this.setId(id)
     this.setDocument(document)
     this.setName(name)
     this.setEmail(email)
@@ -34,8 +35,8 @@ export class Customer {
     this.setUpdatedAt(updatedAt)
   }
 
-  private setId(): void {
-    this.id = randomUUID()
+  private setId(id: string): void {
+    this.id = id ?? randomUUID()
   }
 
   public getId(): string {

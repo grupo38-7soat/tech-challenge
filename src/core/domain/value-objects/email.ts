@@ -1,5 +1,3 @@
-import { DomainException } from '../base/domain-exception'
-
 export class Email {
   constructor(private readonly email: string) {}
 
@@ -7,7 +5,5 @@ export class Email {
     return this.email
   }
 
-  validateEmail(): void {
-    throw new DomainException('Método não implementado')
-  }
+  validateEmail(): void {}
 }

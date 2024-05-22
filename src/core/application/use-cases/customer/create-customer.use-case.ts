@@ -28,7 +28,7 @@ export class CreateCustomerUseCase implements ICreateCustomerUseCase {
       new Date().toISOString(),
       new Date().toISOString(),
     )
-    const customerId = await this.customerRepository.saveCustomer(newCustomer)
-    return { customerId }
+    const id = await this.customerRepository.saveCustomer(newCustomer)
+    return { id }
   }
 }

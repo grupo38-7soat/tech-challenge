@@ -1,4 +1,3 @@
-import { globalEnvs } from '@adapter/config/envs/global'
 import {
   CreateCustomerUseCase,
   CreateProductUseCase,
@@ -9,6 +8,7 @@ import {
   SearchProductUseCase,
   UpdateProductUseCase,
 } from '@core/application/use-cases'
+import { globalEnvs } from '@adapter/config/envs/global'
 import {
   CustomerController,
   OrderController,
@@ -16,10 +16,17 @@ import {
 } from '@adapter/driver/api/controllers'
 import { ExpressHttpServerAdapter } from '@adapter/driver/api/express-server.adapter'
 import { IHttpServer } from '@adapter/driver/api/types/http-server'
+import { PostgresConnectionAdapter } from '@adapter/driven/database/postgres-connection.adapter'
+import { CustomerRepository } from '@adapter/driven/database/repositories'
 
+const postgresConnectionAdapter = new PostgresConnectionAdapter()
+// repositories
+const customerRepository = new CustomerRepository(postgresConnectionAdapter)
 // useCases
-const createCustomerUseCase = new CreateCustomerUseCase()
-const getCustomerByDocumentUseCase = new GetCustomerByDocumentUseCase()
+const createCustomerUseCase = new CreateCustomerUseCase(customerRepository)
+const getCustomerByDocumentUseCase = new GetCustomerByDocumentUseCase(
+  customerRepository,
+)
 const createProductUseCase = new CreateProductUseCase()
 const updateProductUseCase = new UpdateProductUseCase()
 const searchProductUseCase = new SearchProductUseCase()
@@ -46,4 +53,4 @@ const server: IHttpServer = new ExpressHttpServerAdapter(
   productController,
   orderController,
 )
-server.run(globalEnvs.serverPort)
+server.run(globalEnvs.api.serverPort)
