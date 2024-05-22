@@ -6,6 +6,7 @@ import {
   ICreateCustomerUseCase,
 } from '../types/customer'
 import { Customer } from '@core/domain/entities'
+import { randomUUID } from 'crypto'
 
 export class CreateCustomerUseCase implements ICreateCustomerUseCase {
   constructor(private readonly customerRepository: ICustomerRepository) {}
@@ -21,14 +22,17 @@ export class CreateCustomerUseCase implements ICreateCustomerUseCase {
         ExceptionCause.MISSING_DATA,
       )
     }
-    const newCustomer = new Customer(
-      document,
-      name,
-      email,
-      new Date().toISOString(),
-      new Date().toISOString(),
-    )
-    const id = await this.customerRepository.saveCustomer(newCustomer)
+    const customer =
+      await this.customerRepository.findCustomerByDocument(document)
+    if (customer) {
+      throw new DomainException(
+        'Cliente já existe na base',
+        ExceptionCause.INVALID_DATA,
+      )
+    }
+    const id = randomUUID()
+    const newCustomer = new Customer(document, name, email, id)
+    await this.customerRepository.saveCustomer(newCustomer)
     return { id }
   }
 }

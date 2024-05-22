@@ -21,21 +21,17 @@ export class CustomerRepository implements ICustomerRepository {
     this.table = 'fast_food.customer'
   }
 
-  async saveCustomer(customer: Customer): Promise<string> {
+  async saveCustomer(customer: Customer): Promise<void> {
     try {
-      const result = await this.postgresConnectionAdapter.query(
-        `INSERT INTO ${this.table}(id, document, name, email, created_at, updated_at) VALUES($1::uuid, $2::text, $3::text, $4::text, $5::timestamp, $6::timestamp)`,
+      await this.postgresConnectionAdapter.query(
+        `INSERT INTO ${this.table}(id, document, name, email) VALUES($1::uuid, $2::text, $3::text, $4::text)`,
         [
           `${customer.getId()}`,
           `${customer.getDocument()}`,
           `${customer.getName()}`,
           `${customer.getEmail()}`,
-          `${customer.getCreatedAt()}`,
-          `${customer.getUpdatedAt()}`,
         ],
       )
-      console.log('result = > ', result)
-      return ''
     } catch (error) {
       console.error(error)
       throw new DomainException(
