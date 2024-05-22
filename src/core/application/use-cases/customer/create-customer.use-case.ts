@@ -1,3 +1,5 @@
+import { randomUUID } from 'crypto'
+import { Customer } from '@core/domain/entities'
 import { ICustomerRepository } from '@core/domain/repositories'
 import { DomainException, ExceptionCause } from '@core/domain/base'
 import {
@@ -5,8 +7,6 @@ import {
   CreateCustomerOutput,
   ICreateCustomerUseCase,
 } from '../types/customer'
-import { Customer } from '@core/domain/entities'
-import { randomUUID } from 'crypto'
 
 export class CreateCustomerUseCase implements ICreateCustomerUseCase {
   constructor(private readonly customerRepository: ICustomerRepository) {}
