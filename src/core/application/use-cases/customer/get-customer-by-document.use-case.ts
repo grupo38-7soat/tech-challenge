@@ -1,3 +1,5 @@
+import { ICustomerRepository } from '@core/domain/repositories'
+import { DomainException, ExceptionCause } from '@core/domain/base'
 import {
   GetCustomerByDocumentInput,
   GetCustomerByDocumentOutput,
@@ -7,18 +9,40 @@ import {
 export class GetCustomerByDocumentUseCase
   implements IGetCustomerByDocumentUseCase
 {
-  constructor() {}
+  constructor(private readonly customerRepository: ICustomerRepository) {}
 
-  async execute(
-    input: GetCustomerByDocumentInput,
-  ): Promise<GetCustomerByDocumentOutput> {
-    console.log('input => ', input)
+  async execute({
+    document,
+  }: GetCustomerByDocumentInput): Promise<GetCustomerByDocumentOutput> {
+    if (!document) {
+      throw new DomainException(
+        'O cpf não pode ser vazio',
+        ExceptionCause.MISSING_DATA,
+      )
+    }
+    const customer =
+      await this.customerRepository.findCustomerByDocument(document)
+    if (!customer) {
+      throw new DomainException(
+        'Cliente não encontrado',
+        ExceptionCause.NOTFOUND_EXCEPTION,
+      )
+    }
+    const {
+      id: customerId,
+      document: customerDocument,
+      name,
+      email,
+      createdAt,
+      updatedAt,
+    } = customer.toJson()
     return {
-      customerId: '12345',
-      name: 'some_info',
-      email: 'some_info',
-      document: 'some_info',
-      createdAt: 'some_info',
+      customerId,
+      document: customerDocument,
+      name,
+      email,
+      createdAt,
+      updatedAt,
     }
   }
 }

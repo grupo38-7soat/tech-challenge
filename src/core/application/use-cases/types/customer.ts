@@ -18,6 +18,7 @@ export type GetCustomerByDocumentOutput = {
   email: string
   document: string
   createdAt: string
+  updatedAt: string
 }
 
 export interface ICreateCustomerUseCase {

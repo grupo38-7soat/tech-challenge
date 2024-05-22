@@ -1,14 +1,34 @@
+import { ICustomerRepository } from '@core/domain/repositories'
+import { DomainException, ExceptionCause } from '@core/domain/base'
 import {
   CreateCustomerInput,
   CreateCustomerOutput,
   ICreateCustomerUseCase,
 } from '../types/customer'
+import { Customer } from '@core/domain/entities'
 
 export class CreateCustomerUseCase implements ICreateCustomerUseCase {
-  constructor() {}
+  constructor(private readonly customerRepository: ICustomerRepository) {}
 
-  async execute(input: CreateCustomerInput): Promise<CreateCustomerOutput> {
-    console.log('input => ', input)
-    return { customerId: '12345' }
+  async execute({
+    document,
+    name,
+    email,
+  }: CreateCustomerInput): Promise<CreateCustomerOutput> {
+    if (!document || !name || !email) {
+      throw new DomainException(
+        'Todos os campos obrigatórios devem ser enviados',
+        ExceptionCause.MISSING_DATA,
+      )
+    }
+    const newCustomer = new Customer(
+      document,
+      name,
+      email,
+      new Date().toISOString(),
+      new Date().toISOString(),
+    )
+    const customerId = await this.customerRepository.saveCustomer(newCustomer)
+    return { customerId }
   }
 }
