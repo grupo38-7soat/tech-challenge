@@ -69,7 +69,7 @@ export class Customer {
 
   private setDocument(value: string): void {
     const document = new Document(value)
-    document.validateDocument()
+    document.validateDocument(value)
     this.document = document
   }
 
