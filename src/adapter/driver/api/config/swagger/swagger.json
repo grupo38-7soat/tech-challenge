@@ -1,0 +1,372 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Fast Food",
+    "version": "1.0.0",
+    "description": "Documentation for your API"
+  },
+  "baseUrl": "http://localhost:3000",
+  "tags": [
+    {
+      "name": "Cliente"
+    },
+    {
+      "name": "Produto"
+    },
+    {
+      "name": "Pedido"
+    }
+  ],
+  "paths": {
+    "/clientes": {
+      "post": {
+        "tags": [
+          "Cliente"
+        ],
+        "summary": "Cria um novo cliente",
+        "operationId": "createCustomer",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomerRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cliente criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateCustomerResponseBody"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/clientes/{document}": {
+      "get": {
+        "tags": [
+          "Cliente"
+        ],
+        "summary": "Obtém um cliente pelo documento",
+        "operationId": "getCustomerByDocument",
+        "parameters": [
+          {
+            "name": "document",
+            "description": "CPF do cliente",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cliente encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCustomerByDocumentResponseBody"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/produtos": {
+      "post": {
+        "tags": [
+          "Produto"
+        ],
+        "summary": "Cria um novo produto",
+        "operationId": "createProduct",
+        "responses": {
+          "200": {
+            "description": "Produto criado com sucesso"
+          },
+          "400": {
+            "description": "Erro na requisição"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Produto"
+        ],
+        "summary": "Busca produtos",
+        "operationId": "searchProduct",
+        "responses": {
+          "200": {
+            "description": "Lista de produtos"
+          },
+          "404": {
+            "description": "Nenhum produto encontrado"
+          }
+        }
+      }
+    },
+    "/produtos/{id}": {
+      "put": {
+        "tags": [
+          "Produto"
+        ],
+        "summary": "Atualiza um produto pelo ID",
+        "operationId": "updateProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produto atualizado com sucesso"
+          },
+          "404": {
+            "description": "Produto não encontrado"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Produto"
+        ],
+        "summary": "Remove um produto pelo ID",
+        "operationId": "removeProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produto removido com sucesso"
+          },
+          "404": {
+            "description": "Produto não encontrado"
+          }
+        }
+      }
+    },
+    "/checkout": {
+      "post": {
+        "tags": [
+          "Pedido"
+        ],
+        "summary": "Realiza um checkout",
+        "operationId": "makeCheckout",
+        "responses": {
+          "200": {
+            "description": "Checkout realizado com sucesso"
+          },
+          "400": {
+            "description": "Erro na requisição"
+          }
+        }
+      }
+    },
+    "/pedidos": {
+      "get": {
+        "tags": [
+          "Pedido"
+        ],
+        "summary": "Busca pedidos",
+        "operationId": "searchOrders",
+        "responses": {
+          "200": {
+            "description": "Lista de pedidos"
+          },
+          "404": {
+            "description": "Nenhum pedido encontrado"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateCustomerRequestBody": {
+        "type": "object",
+        "properties": {
+          "document": {
+            "type": "string",
+            "description": "CPF do cliente",
+            "example": "12345678911"
+          },
+          "email": {
+            "type": "string",
+            "description": "E-mail do cliente",
+            "example": "teste@email.com"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome do cliente",
+            "example": "Teste"
+          }
+        },
+        "required": ["document", "email", "name"]
+      },
+      "CreateCustomerResponseBody": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Id do cliente criado",
+                "example": "610e5de2-9d0b-44c2-ba7b-5d872cd5a067"
+              }
+            }
+          }
+        }
+      },
+      "GetCustomerByDocumentResponseBody": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Id do cliente",
+                "example": "610e5de2-9d0b-44c2-ba7b-5d872cd5a067"
+              },
+              "document": {
+                "type": "string",
+                "description": "CPF do cliente",
+                "example": "12345678911"
+              },
+              "name": {
+                "type": "string",
+                "description": "Nome do cliente",
+                "example": "Teste"
+              },
+              "email": {
+                "type": "string",
+                "description": "E-mail do cliente",
+                "example": "teste@email.com"
+              },
+              "createdAt": {
+                "type": "string",
+                "description": "Data de criação do cliente",
+                "example": "2024-05-23T03:23:07.956Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "description": "Data da última atualização do cliente",
+                "example": "2024-05-23T03:23:07.956Z"
+              }
+            }
+          }
+        }
+      },
+      "DefaultErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "description": "Mensagem do erro",
+                "example": "Algum erro aconteceu"
+              },
+              "cause": {
+                "type": "string",
+                "description": "Motivo do erro",
+                "example": "UNKNOWN_EXCEPTION"
+              }
+            }
+          }
+        }
+      },
+      "NotFoundErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "description": "Mensagem do erro",
+                "example": "Recurso não encontrado"
+              },
+              "cause": {
+                "type": "string",
+                "description": "Motivo do erro",
+                "example": "NOTFOUND_EXCEPTION"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

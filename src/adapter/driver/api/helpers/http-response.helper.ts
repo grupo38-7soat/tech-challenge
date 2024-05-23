@@ -7,7 +7,7 @@ export class HttpResponseHelper {
     response: ExpressResponse,
     { data, statusCode = HttpStatus.OK }: IHttpResponse,
   ): ExpressResponse {
-    return response.status(statusCode).json(data)
+    return response.status(statusCode).json({ data })
   }
 
   static onError(

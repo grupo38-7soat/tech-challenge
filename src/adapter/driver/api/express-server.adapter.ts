@@ -1,6 +1,6 @@
 import express, { Express, Router } from 'express'
 import swaggerUI from 'swagger-ui-express'
-import swaggerSpecs from '@adapter/driver/api/config/swagger/swagger.config'
+import swaggerDocument from './config/swagger/swagger.json'
 import { IHttpServer } from './types/http-server'
 import {
   ICustomerController,
@@ -72,7 +72,7 @@ export class ExpressHttpServerAdapter implements IHttpServer {
   }
 
   private configDocumentation(): void {
-    this.app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpecs))
+    this.app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument))
   }
 
   run(port: number): void {
