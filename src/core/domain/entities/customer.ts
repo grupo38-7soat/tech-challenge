@@ -59,7 +59,7 @@ export class Customer {
 
   private setEmail(value: string): void {
     const email = new Email(value)
-    email.validateEmail()
+    email.validateEmail(value)
     this.email = email
   }
 
