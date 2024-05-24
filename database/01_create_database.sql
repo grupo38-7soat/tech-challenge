@@ -34,13 +34,20 @@ create table if not exists fast_food.order (
     constraint fk_order_customer foreign key (customer_id) references fast_food.customer(id)
 );
 
+create type if not exists category_enum as enum (
+  'LANCHE',
+  'ACOMPANHAMENTO',
+  'BEBIDA',
+  'SOBREMESA'
+);
+
 create table if not exists fast_food.product (
     id bigserial,
     name varchar(255) not null,
-    description text,
-    category varchar(255) not null,
+    description text not null,
     price decimal(10, 2) not null,
-    link_photo text,
+    image_links text[],
+    category category_enum not null,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp,
     constraint pk_product primary key (id)
