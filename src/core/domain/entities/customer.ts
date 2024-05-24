@@ -44,9 +44,10 @@ export class Customer {
   }
 
   private setName(value: string): void {
-    if (value.length < 5) {
+    const min = 5
+    if (value.length < min) {
       throw new DomainException(
-        'O nome deve ter no mínimo 5 caracteres',
+        `O nome deve ter no mínimo ${min} caracteres`,
         ExceptionCause.BUSINESS_EXCEPTION,
       )
     }
