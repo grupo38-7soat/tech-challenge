@@ -30,7 +30,7 @@ const getCustomerByDocumentUseCase = new GetCustomerByDocumentUseCase(
   customerRepository,
 )
 const createProductUseCase = new CreateProductUseCase(productRepository)
-const updateProductUseCase = new UpdateProductUseCase()
+const updateProductUseCase = new UpdateProductUseCase(productRepository)
 const searchProductUseCase = new SearchProductUseCase()
 const removeProductUseCase = new RemoveProductUseCase()
 const makeCheckoutUseCase = new MakeCheckoutUseCase()

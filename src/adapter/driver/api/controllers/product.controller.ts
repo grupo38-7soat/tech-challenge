@@ -43,14 +43,17 @@ export class ProductController implements IProductController {
     response: ExpressResponse,
   ): Promise<ExpressResponse> {
     try {
-      console.log('Rota: ', {
-        url: request.url,
-        method: request.method,
-        body: request.body,
-        params: request.params,
+      const productData = await this.updateProductUseCase.execute({
+        id: parseInt(request.params.id),
+        name: request.body.name,
+        description: request.body.description,
+        price: request.body.price,
+        category: request.body.category,
+        imageLinks: request.body.imageLinks,
       })
-      const data = await this.updateProductUseCase.execute({})
-      return HttpResponseHelper.onSucess(response, data)
+      return HttpResponseHelper.onSucess(response, {
+        data: productData,
+      })
     } catch (error) {
       return HttpResponseHelper.onError(response, { error })
     }

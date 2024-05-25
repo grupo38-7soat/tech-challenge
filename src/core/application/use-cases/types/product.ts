@@ -12,9 +12,18 @@ export type CreateProductOutput = {
   id: number
 }
 
-export type UpdateProductInput = {}
+export type UpdateProductInput = {
+  id: number
+  name: string
+  description: string
+  price: number
+  category: Category
+  imageLinks: string[]
+}
 
-export type UpdateProductOutput = {}
+export type UpdateProductOutput = {
+  id: number
+}
 
 export type SearchProductInput = {}
 
