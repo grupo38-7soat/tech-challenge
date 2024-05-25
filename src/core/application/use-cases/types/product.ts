@@ -29,9 +29,9 @@ export type SearchProductInput = {}
 
 export type SearchProductOutput = {}
 
-export type RemoveProductInput = {}
-
-export type RemoveProductOutput = {}
+export type RemoveProductInput = {
+  id: number
+}
 
 export interface ICreateProductUseCase {
   execute(input: CreateProductInput): Promise<CreateProductOutput>
@@ -46,5 +46,5 @@ export interface ISearchProductUseCase {
 }
 
 export interface IRemoveProductUseCase {
-  execute(input: RemoveProductInput): Promise<RemoveProductOutput>
+  execute(input: RemoveProductInput): Promise<void>
 }

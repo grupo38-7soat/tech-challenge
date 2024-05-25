@@ -48,7 +48,7 @@ export class CustomerRepository implements ICustomerRepository {
     try {
       const { rows } = await this.postgresConnectionAdapter.query<CustomerData>(
         `SELECT * FROM ${this.table} WHERE document = $1::text LIMIT 1`,
-        [`${document}`],
+        [document],
       )
       if (!rows || !rows.length) return null
       return new Customer(

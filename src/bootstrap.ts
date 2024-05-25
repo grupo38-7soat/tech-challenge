@@ -32,7 +32,7 @@ const getCustomerByDocumentUseCase = new GetCustomerByDocumentUseCase(
 const createProductUseCase = new CreateProductUseCase(productRepository)
 const updateProductUseCase = new UpdateProductUseCase(productRepository)
 const searchProductUseCase = new SearchProductUseCase()
-const removeProductUseCase = new RemoveProductUseCase()
+const removeProductUseCase = new RemoveProductUseCase(productRepository)
 const makeCheckoutUseCase = new MakeCheckoutUseCase()
 const searchOrdersUseCase = new SearchOrdersUseCase()
 // controllers

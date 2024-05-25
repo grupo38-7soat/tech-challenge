@@ -82,14 +82,12 @@ export class ProductController implements IProductController {
     response: ExpressResponse,
   ): Promise<ExpressResponse> {
     try {
-      console.log('Rota: ', {
-        url: request.url,
-        method: request.method,
-        body: request.body,
-        params: request.params,
+      await this.removeProductUseCase.execute({
+        id: parseInt(request.params.id),
       })
-      const data = await this.removeProductUseCase.execute({})
-      return HttpResponseHelper.onSucess(response, data)
+      return HttpResponseHelper.onSucess(response, {
+        statusCode: HttpStatus.NO_CONTENT,
+      })
     } catch (error) {
       return HttpResponseHelper.onError(response, { error })
     }

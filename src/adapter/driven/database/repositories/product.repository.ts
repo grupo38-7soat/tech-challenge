@@ -1,7 +1,18 @@
-import { Product, Category } from '@core/domain/entities'
+import { Category, Product } from '@core/domain/entities'
 import { IProductRepository } from '@core/domain/repositories'
 import { DomainException, ExceptionCause } from '@core/domain/base'
 import { PostgresConnectionAdapter } from '../postgres-connection.adapter'
+
+type ProductData = {
+  id: number
+  name: string
+  description: string
+  category: string
+  price: number
+  image_links: string[]
+  created_at: string
+  updated_at: string
+}
 
 export class ProductRepository implements IProductRepository {
   table: string
@@ -58,13 +69,44 @@ export class ProductRepository implements IProductRepository {
     }
   }
 
-  async findProductByCategory(category: Category): Promise<Product> {
-    console.log(category)
-    throw new Error('Method not implemented.')
+  async findProductByParam(param: string, value: unknown): Promise<Product> {
+    try {
+      const { rows } = await this.postgresConnectionAdapter.query<ProductData>(
+        `SELECT * FROM ${this.table} WHERE ${param} = $1 LIMIT 1`,
+        [value],
+      )
+      if (!rows || !rows.length) return null
+      return new Product(
+        rows[0].name,
+        rows[0].description,
+        Number(rows[0].price),
+        Category[rows[0].category],
+        rows[0].image_links,
+        Number(rows[0].id),
+        rows[0].created_at,
+        rows[0].updated_at,
+      )
+    } catch (error) {
+      console.error(error)
+      throw new DomainException(
+        'Erro ao consultar produto',
+        ExceptionCause.PERSISTANCE_EXCEPTION,
+      )
+    }
   }
 
   async removeProduct(id: number): Promise<void> {
-    console.log(id)
-    throw new Error('Method not implemented.')
+    try {
+      await this.postgresConnectionAdapter.query(
+        `DELETE FROM ${this.table} WHERE id = $1::int`,
+        [id],
+      )
+    } catch (error) {
+      console.error(error)
+      throw new DomainException(
+        'Erro ao remover produto',
+        ExceptionCause.PERSISTANCE_EXCEPTION,
+      )
+    }
   }
 }
