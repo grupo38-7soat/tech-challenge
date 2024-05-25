@@ -34,7 +34,7 @@ create table if not exists fast_food.order (
     constraint fk_order_customer foreign key (customer_id) references fast_food.customer(id)
 );
 
-create type if not exists category_enum as enum (
+create type category_enum as enum (
   'LANCHE',
   'ACOMPANHAMENTO',
   'BEBIDA',

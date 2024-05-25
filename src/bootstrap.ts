@@ -18,16 +18,18 @@ import { ExpressHttpServerAdapter } from '@adapter/driver/api/express-server.ada
 import { IHttpServer } from '@adapter/driver/api/types/http-server'
 import { PostgresConnectionAdapter } from '@adapter/driven/database/postgres-connection.adapter'
 import { CustomerRepository } from '@adapter/driven/database/repositories'
+import { ProductRepository } from '@adapter/driven/database/repositories/product.repository'
 
 const postgresConnectionAdapter = new PostgresConnectionAdapter()
 // repositories
 const customerRepository = new CustomerRepository(postgresConnectionAdapter)
+const productRepository = new ProductRepository(postgresConnectionAdapter)
 // useCases
 const createCustomerUseCase = new CreateCustomerUseCase(customerRepository)
 const getCustomerByDocumentUseCase = new GetCustomerByDocumentUseCase(
   customerRepository,
 )
-const createProductUseCase = new CreateProductUseCase()
+const createProductUseCase = new CreateProductUseCase(productRepository)
 const updateProductUseCase = new UpdateProductUseCase()
 const searchProductUseCase = new SearchProductUseCase()
 const removeProductUseCase = new RemoveProductUseCase()

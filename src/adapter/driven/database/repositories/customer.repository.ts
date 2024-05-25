@@ -24,12 +24,15 @@ export class CustomerRepository implements ICustomerRepository {
   async saveCustomer(customer: Customer): Promise<void> {
     try {
       await this.postgresConnectionAdapter.query(
-        `INSERT INTO ${this.table}(id, document, name, email) VALUES($1::uuid, $2::text, $3::text, $4::text)`,
+        `
+          INSERT INTO ${this.table}(id, document, name, email)
+          VALUES($1::uuid, $2::text, $3::text, $4::text)
+        `,
         [
-          `${customer.getId()}`,
-          `${customer.getDocument()}`,
-          `${customer.getName()}`,
-          `${customer.getEmail()}`,
+          customer.getId(),
+          customer.getDocument(),
+          customer.getName(),
+          customer.getEmail(),
         ],
       )
     } catch (error) {

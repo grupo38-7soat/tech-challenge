@@ -1,6 +1,16 @@
-export type CreateProductInput = {}
+import { Category } from '@core/domain/entities'
 
-export type CreateProductOutput = {}
+export type CreateProductInput = {
+  name: string
+  description: string
+  price: number
+  category: Category
+  imageLinks: string[]
+}
+
+export type CreateProductOutput = {
+  id: number
+}
 
 export type UpdateProductInput = {}
 

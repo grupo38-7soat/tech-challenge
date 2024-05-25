@@ -6,6 +6,7 @@ import {
   IUpdateProductUseCase,
 } from '@core/application/use-cases'
 import { IProductController } from './types/controllers'
+import { HttpStatus } from '../types/http-server'
 import { HttpResponseHelper } from '../helpers'
 
 export class ProductController implements IProductController {
@@ -21,14 +22,17 @@ export class ProductController implements IProductController {
     response: ExpressResponse,
   ): Promise<ExpressResponse> {
     try {
-      console.log('Rota: ', {
-        url: request.url,
-        method: request.method,
-        body: request.body,
-        params: request.params,
+      const productData = await this.createProductUseCase.execute({
+        name: request.body.name,
+        description: request.body.description,
+        price: request.body.price,
+        category: request.body.category,
+        imageLinks: request.body.imageLinks,
       })
-      const data = await this.createProductUseCase.execute({})
-      return HttpResponseHelper.onSucess(response, data)
+      return HttpResponseHelper.onSucess(response, {
+        data: productData,
+        statusCode: HttpStatus.CREATED,
+      })
     } catch (error) {
       return HttpResponseHelper.onError(response, { error })
     }
