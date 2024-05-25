@@ -1,10 +1,10 @@
 import { DomainException, ExceptionCause } from '../base'
 
 export enum Category {
-  SNACK = 'LANCHE',
-  ADDITIONAL = 'ACOMPANHAMENTO',
-  DRINK = 'BEBIDA',
-  DESSERT = 'SOBREMESA',
+  LANCHE = 'LANCHE',
+  ACOMPANHAMENTO = 'ACOMPANHAMENTO',
+  BEBIDA = 'BEBIDA',
+  SOBREMESA = 'SOBREMESA',
 }
 
 type SerializedProduct = {
