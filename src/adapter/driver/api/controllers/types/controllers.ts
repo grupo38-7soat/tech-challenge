@@ -20,7 +20,7 @@ export interface IProductController {
     request: ExpressRequest,
     response: ExpressResponse,
   ): Promise<ExpressResponse>
-  searchProduct(
+  searchProducts(
     request: ExpressRequest,
     response: ExpressResponse,
   ): Promise<ExpressResponse>

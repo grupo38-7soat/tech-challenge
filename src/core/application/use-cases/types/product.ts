@@ -25,9 +25,22 @@ export type UpdateProductOutput = {
   id: number
 }
 
-export type SearchProductInput = {}
+export type SearchProductsInput = {
+  id: number
+  name: string
+  category: string
+}
 
-export type SearchProductOutput = {}
+export type SearchProductsOutput = {
+  id: number
+  name: string
+  description: string
+  category: Category
+  price: number
+  imageLinks: string[]
+  createdAt: string
+  updatedAt: string
+}
 
 export type RemoveProductInput = {
   id: number
@@ -41,8 +54,8 @@ export interface IUpdateProductUseCase {
   execute(input: UpdateProductInput): Promise<UpdateProductOutput>
 }
 
-export interface ISearchProductUseCase {
-  execute(input: SearchProductInput): Promise<SearchProductOutput>
+export interface ISearchProductsUseCase {
+  execute(input: SearchProductsInput): Promise<SearchProductsOutput[]>
 }
 
 export interface IRemoveProductUseCase {

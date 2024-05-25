@@ -1,5 +1,5 @@
 import { Category, Product } from '@core/domain/entities'
-import { IProductRepository } from '@core/domain/repositories'
+import { IProductRepository, ProductParams } from '@core/domain/repositories'
 import { DomainException, ExceptionCause } from '@core/domain/base'
 import { PostgresConnectionAdapter } from '../postgres-connection.adapter'
 
@@ -90,6 +90,49 @@ export class ProductRepository implements IProductRepository {
       console.error(error)
       throw new DomainException(
         'Erro ao consultar produto',
+        ExceptionCause.PERSISTANCE_EXCEPTION,
+      )
+    }
+  }
+
+  async findAllProducts(params?: ProductParams): Promise<Product[]> {
+    try {
+      const haveParams = params && Object.keys(params).length
+      const [query, paramsList] = !haveParams
+        ? [`SELECT * FROM ${this.table}`, []]
+        : [
+            `SELECT * FROM ${this.table} WHERE ${Object.keys(params)
+              .map(
+                (field, index) =>
+                  `${field} ${params[field].exactMatch ? '=' : 'ILIKE'} $${index + 1}`,
+              )
+              .join(' AND ')}`,
+            Object.values(params).map(param =>
+              param.exactMatch ? param.value : `%${param.value}%`,
+            ),
+          ]
+      const { rows } = await this.postgresConnectionAdapter.query<ProductData>(
+        query,
+        [...paramsList],
+      )
+      if (!rows || !rows.length) return []
+      return rows.map(
+        row =>
+          new Product(
+            row.name,
+            row.description,
+            Number(row.price),
+            Category[row.category],
+            row.image_links,
+            Number(row.id),
+            row.created_at,
+            row.updated_at,
+          ),
+      )
+    } catch (error) {
+      console.error(error)
+      throw new DomainException(
+        'Erro ao consultar produtos',
         ExceptionCause.PERSISTANCE_EXCEPTION,
       )
     }

@@ -57,7 +57,7 @@ export const productRoutes: IRouteProps[] = [
       _response: ExpressResponse,
       next: ExpressNextFuction,
     ) => next(),
-    handler: 'searchProduct',
+    handler: 'searchProducts',
   },
   {
     resource: '/produtos/:id',

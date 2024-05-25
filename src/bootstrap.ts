@@ -5,7 +5,7 @@ import {
   MakeCheckoutUseCase,
   RemoveProductUseCase,
   SearchOrdersUseCase,
-  SearchProductUseCase,
+  SearchProductsUseCase,
   UpdateProductUseCase,
 } from '@core/application/use-cases'
 import { globalEnvs } from '@adapter/config/envs/global'
@@ -31,7 +31,7 @@ const getCustomerByDocumentUseCase = new GetCustomerByDocumentUseCase(
 )
 const createProductUseCase = new CreateProductUseCase(productRepository)
 const updateProductUseCase = new UpdateProductUseCase(productRepository)
-const searchProductUseCase = new SearchProductUseCase()
+const searchProductsUseCase = new SearchProductsUseCase(productRepository)
 const removeProductUseCase = new RemoveProductUseCase(productRepository)
 const makeCheckoutUseCase = new MakeCheckoutUseCase()
 const searchOrdersUseCase = new SearchOrdersUseCase()
@@ -43,7 +43,7 @@ const customerController = new CustomerController(
 const productController = new ProductController(
   createProductUseCase,
   updateProductUseCase,
-  searchProductUseCase,
+  searchProductsUseCase,
   removeProductUseCase,
 )
 const orderController = new OrderController(

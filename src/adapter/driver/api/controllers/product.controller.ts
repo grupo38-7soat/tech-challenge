@@ -2,7 +2,7 @@ import { Request as ExpressRequest, Response as ExpressResponse } from 'express'
 import {
   ICreateProductUseCase,
   IRemoveProductUseCase,
-  ISearchProductUseCase,
+  ISearchProductsUseCase,
   IUpdateProductUseCase,
 } from '@core/application/use-cases'
 import { IProductController } from './types/controllers'
@@ -13,7 +13,7 @@ export class ProductController implements IProductController {
   constructor(
     private readonly createProductUseCase: ICreateProductUseCase,
     private readonly updateProductUseCase: IUpdateProductUseCase,
-    private readonly searchProductUseCase: ISearchProductUseCase,
+    private readonly searchProductsUseCase: ISearchProductsUseCase,
     private readonly removeProductUseCase: IRemoveProductUseCase,
   ) {}
 
@@ -59,19 +59,19 @@ export class ProductController implements IProductController {
     }
   }
 
-  async searchProduct(
+  async searchProducts(
     request: ExpressRequest,
     response: ExpressResponse,
   ): Promise<ExpressResponse> {
     try {
-      console.log('Rota: ', {
-        url: request.url,
-        method: request.method,
-        body: request.body,
-        params: request.params,
+      const productsData = await this.searchProductsUseCase.execute({
+        id: request.query.id ? Number(request.query.id) : undefined,
+        name: request.query.name as string,
+        category: request.query.category as string,
       })
-      const data = await this.searchProductUseCase.execute({})
-      return HttpResponseHelper.onSucess(response, data)
+      return HttpResponseHelper.onSucess(response, {
+        data: productsData,
+      })
     } catch (error) {
       return HttpResponseHelper.onError(response, { error })
     }
