@@ -187,12 +187,71 @@
         ],
         "summary": "Busca produtos",
         "operationId": "searchProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Id do produto",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "int"
+            }
+          },
+          {
+            "name": "name",
+            "description": "Nome do produto",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "description": "Categoria do produto",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "LANCHE",
+                "ACOMPANHAMENTO",
+                "BEBIDA",
+                "SOBREMESA"
+              ]
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Lista de produtos"
+            "description": "Lista de produtos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchProductsResponseBody"
+                }
+              }
+            }
           },
-          "404": {
-            "description": "Nenhum produto encontrado"
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -376,7 +435,11 @@
             "example": "Teste"
           }
         },
-        "required": ["document", "email", "name"]
+        "required": [
+          "document",
+          "email",
+          "name"
+        ]
       },
       "CreateCustomerResponseBody": {
         "type": "object",
@@ -449,21 +512,35 @@
           "price": {
             "type": "double",
             "description": "Valor do produto",
-            "example": "14.99"
+            "example": 14.99
           },
           "category": {
             "type": "string",
-            "enum": ["LANCHE", "ACOMPANHAMENTO", "BEBIDA", "SOBREMESA"],
+            "enum": [
+              "LANCHE",
+              "ACOMPANHAMENTO",
+              "BEBIDA",
+              "SOBREMESA"
+            ],
             "description": "Categoria do produto",
             "example": "LANCHE"
           },
           "imageLinks": {
             "type": "string[]",
             "description": "Lista de imagens do produto",
-            "example": ["https://exemplo.com/lanche1", "https://exemplo.com/lanche2"]
+            "example": [
+              "https://exemplo.com/lanche1",
+              "https://exemplo.com/lanche2"
+            ]
           }
         },
-        "required": ["name", "description", "price", "category", "imageLinks"]
+        "required": [
+          "name",
+          "description",
+          "price",
+          "category",
+          "imageLinks"
+        ]
       },
       "SaveProductResponseBody": {
         "type": "object",
@@ -474,7 +551,69 @@
               "id": {
                 "type": "int",
                 "description": "Id do produto criado",
-                "example": "1"
+                "example": 1
+              }
+            }
+          }
+        }
+      },
+      "SearchProductsResponseBody": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "int",
+                  "description": "Id do produto",
+                  "example": 1
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Nome do produto",
+                  "example": "Cheeseburger"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Descrição do produto",
+                  "example": "Pão, hambúrguer de carne, queijo, alface, tomate e maionese"
+                },
+                "price": {
+                  "type": "double",
+                  "description": "Valor do produto",
+                  "example": 14.99
+                },
+                "category": {
+                  "type": "string",
+                  "enum": [
+                    "LANCHE",
+                    "ACOMPANHAMENTO",
+                    "BEBIDA",
+                    "SOBREMESA"
+                  ],
+                  "description": "Categoria do produto",
+                  "example": "LANCHE"
+                },
+                "imageLinks": {
+                  "type": "string[]",
+                  "description": "Lista de imagens do produto",
+                  "example": [
+                    "https://exemplo.com/lanche1",
+                    "https://exemplo.com/lanche2"
+                  ]
+                },
+                "createdAt": {
+                  "type": "string",
+                  "description": "Data de criação do produto",
+                  "example": "2024-05-23T03:23:07.956Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "description": "Data da última atualização do produto",
+                  "example": "2024-05-23T03:23:07.956Z"
+                }
               }
             }
           }
