@@ -43,7 +43,7 @@ export class ProductRepository implements IProductRepository {
         : [
             `
               UPDATE ${this.table} SET name = $1::text, description = $2::text, price = $3::numeric,
-              category = $4::category_enum, image_links = $5::text[] WHERE id = $6::int
+              category = $4::category_enum, image_links = $5::text[], updated_at = current_timestamp WHERE id = $6::int
               RETURNING id
             `,
             [
