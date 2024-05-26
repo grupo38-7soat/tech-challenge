@@ -26,6 +26,7 @@
         "summary": "Cria um novo cliente",
         "operationId": "createCustomer",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -137,12 +138,46 @@
         ],
         "summary": "Cria um novo produto",
         "operationId": "createProduct",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductRequestBody"
+              }
+            }
+          }
+        },
         "responses": {
-          "200": {
-            "description": "Produto criado com sucesso"
+          "201": {
+            "description": "Produto criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateProductResponseBody"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Erro na requisição"
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorResponse"
+                }
+              }
+            }
           }
         }
       },
@@ -322,6 +357,53 @@
                 "type": "string",
                 "description": "Data da última atualização do cliente",
                 "example": "2024-05-23T03:23:07.956Z"
+              }
+            }
+          }
+        }
+      },
+      "CreateProductRequestBody": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome do produto",
+            "example": "Cheeseburger"
+          },
+          "description": {
+            "type": "string",
+            "description": "Descrição do produto",
+            "example": "Pão, hambúrguer de carne, queijo, alface, tomate e maionese"
+          },
+          "price": {
+            "type": "double",
+            "description": "Valor do produto",
+            "example": "14.99"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["LANCHE", "ACOMPANHAMENTO", "BEBIDA", "SOBREMESA"],
+            "description": "Categoria do produto",
+            "example": "LANCHE"
+          },
+          "imageLinks": {
+            "type": "string[]",
+            "description": "Lista de imagens do produto",
+            "example": ["https://exemplo.com/lanche1", "https://exemplo.com/lanche2"]
+          }
+        },
+        "required": ["name", "description", "price", "category", "imageLinks"]
+      },
+      "CreateProductResponseBody": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "int",
+                "description": "Id do produto criado",
+                "example": "1"
               }
             }
           }
