@@ -41,7 +41,17 @@ export class UpdateProductUseCase implements IUpdateProductUseCase {
         ExceptionCause.INVALID_DATA,
       )
     }
-    const product = new Product(
+    const product = await this.productRepository.findProductByParam(
+      'id',
+      productId,
+    )
+    if (!product) {
+      throw new DomainException(
+        'Produto não encontrado',
+        ExceptionCause.NOTFOUND_EXCEPTION,
+      )
+    }
+    const newProduct = new Product(
       name,
       description,
       price,
@@ -49,7 +59,7 @@ export class UpdateProductUseCase implements IUpdateProductUseCase {
       imageLinks,
       productId,
     )
-    const id = await this.productRepository.saveProduct(product)
+    const id = await this.productRepository.saveProduct(newProduct)
     return { id }
   }
 }
