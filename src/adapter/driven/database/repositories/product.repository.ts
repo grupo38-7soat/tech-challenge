@@ -59,7 +59,7 @@ export class ProductRepository implements IProductRepository {
         query,
         params,
       )
-      return result.rows[0]?.id
+      return Number(result.rows[0]?.id)
     } catch (error) {
       console.error(error)
       throw new DomainException(
