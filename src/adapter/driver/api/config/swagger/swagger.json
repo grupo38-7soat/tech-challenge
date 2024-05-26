@@ -98,22 +98,22 @@
               }
             }
           },
-          "404": {
-            "description": "Recurso não encontrado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/NotFoundErrorResponse"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Erro na requisição",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DefaultErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResponse"
                 }
               }
             }
@@ -143,7 +143,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateProductRequestBody"
+                "$ref": "#/components/schemas/SaveProductRequestBody"
               }
             }
           }
@@ -154,7 +154,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CreateProductResponseBody"
+                  "$ref": "#/components/schemas/SaveProductResponseBody"
                 }
               }
             }
@@ -214,12 +214,56 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveProductRequestBody"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "Produto atualizado com sucesso"
+            "description": "Produto atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaveProductResponseBody"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorResponse"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Produto não encontrado"
+            "description": "Recurso não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorResponse"
+                }
+              }
+            }
           }
         }
       },
@@ -362,7 +406,7 @@
           }
         }
       },
-      "CreateProductRequestBody": {
+      "SaveProductRequestBody": {
         "type": "object",
         "properties": {
           "name": {
@@ -394,7 +438,7 @@
         },
         "required": ["name", "description", "price", "category", "imageLinks"]
       },
-      "CreateProductResponseBody": {
+      "SaveProductResponseBody": {
         "type": "object",
         "properties": {
           "data": {
