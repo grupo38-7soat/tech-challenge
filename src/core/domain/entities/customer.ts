@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto'
 import { DomainException, ExceptionCause } from '../base'
 import { Document, Email } from '../value-objects'
 
-type SerializedCustomer = {
+export type SerializedCustomer = {
   id: string
   name: string
   email: string

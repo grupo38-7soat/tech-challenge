@@ -1,6 +1,46 @@
-export type MakeCheckoutInput = {}
+import {
+  OrderCurrentStatus,
+  PaymentCurrentStatus,
+  PaymentType,
+} from '@core/domain/entities'
 
-export type MakeCheckoutOutput = {}
+type Item = {
+  id: number
+  quantity: number
+  observation?: string
+}
+
+type Payment = {
+  type: PaymentType
+}
+
+export type MakeCheckoutInput = {
+  customerId?: string
+  items: Item[]
+  orderAmount: number
+  payment: Payment
+}
+
+export type MakeCheckoutOutput = {
+  order: {
+    id: number
+    status: OrderCurrentStatus
+    effectiveDate: string
+    totalAmount: number
+  }
+  payment: {
+    id: string
+    status: PaymentCurrentStatus
+    type: PaymentType
+  }
+  customer?: {
+    id: string
+    name: string
+    email: string
+    document: string
+  }
+  createdAt: string
+}
 
 export type SearchOrdersInput = {}
 

@@ -19,11 +19,15 @@ import { IHttpServer } from '@adapter/driver/api/types/http-server'
 import { PostgresConnectionAdapter } from '@adapter/driven/database/postgres-connection.adapter'
 import { CustomerRepository } from '@adapter/driven/database/repositories'
 import { ProductRepository } from '@adapter/driven/database/repositories/product.repository'
+import { PaymentRepository } from '@adapter/driven/database/repositories/payment.repository'
+import { OrderRepository } from '@adapter/driven/database/repositories/order.repository'
 
 const postgresConnectionAdapter = new PostgresConnectionAdapter()
 // repositories
 const customerRepository = new CustomerRepository(postgresConnectionAdapter)
 const productRepository = new ProductRepository(postgresConnectionAdapter)
+const paymentRepository = new PaymentRepository(postgresConnectionAdapter)
+const orderRepository = new OrderRepository(postgresConnectionAdapter)
 // useCases
 const createCustomerUseCase = new CreateCustomerUseCase(customerRepository)
 const getCustomerByDocumentUseCase = new GetCustomerByDocumentUseCase(
@@ -33,7 +37,12 @@ const createProductUseCase = new CreateProductUseCase(productRepository)
 const updateProductUseCase = new UpdateProductUseCase(productRepository)
 const searchProductsUseCase = new SearchProductsUseCase(productRepository)
 const removeProductUseCase = new RemoveProductUseCase(productRepository)
-const makeCheckoutUseCase = new MakeCheckoutUseCase()
+const makeCheckoutUseCase = new MakeCheckoutUseCase(
+  customerRepository,
+  productRepository,
+  paymentRepository,
+  orderRepository,
+)
 const searchOrdersUseCase = new SearchOrdersUseCase()
 // controllers
 const customerController = new CustomerController(

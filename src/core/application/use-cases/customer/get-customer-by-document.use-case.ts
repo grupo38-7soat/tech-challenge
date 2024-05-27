@@ -20,8 +20,10 @@ export class GetCustomerByDocumentUseCase
         ExceptionCause.MISSING_DATA,
       )
     }
-    const customer =
-      await this.customerRepository.findCustomerByDocument(document)
+    const customer = await this.customerRepository.findCustomerByParam(
+      'document',
+      document,
+    )
     if (!customer) {
       throw new DomainException(
         'Cliente não encontrado',

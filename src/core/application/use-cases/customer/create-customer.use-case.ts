@@ -22,8 +22,10 @@ export class CreateCustomerUseCase implements ICreateCustomerUseCase {
         ExceptionCause.MISSING_DATA,
       )
     }
-    const customer =
-      await this.customerRepository.findCustomerByDocument(document)
+    const customer = await this.customerRepository.findCustomerByParam(
+      'document',
+      document,
+    )
     if (customer) {
       throw new DomainException(
         'Cliente já existe na base',

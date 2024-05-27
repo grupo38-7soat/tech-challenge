@@ -2,5 +2,5 @@ import { Customer } from '../entities'
 
 export interface ICustomerRepository {
   saveCustomer(customer: Customer): Promise<void>
-  findCustomerByDocument(document: string): Promise<Customer>
+  findCustomerByParam(param: string, value: unknown): Promise<Customer>
 }

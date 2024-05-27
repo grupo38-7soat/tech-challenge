@@ -23,8 +23,13 @@ export class OrderController implements IOrderController {
         body: request.body,
         params: request.params,
       })
-      const data = await this.makeCheckoutUseCase.execute({})
-      return HttpResponseHelper.onSucess(response, data)
+      const orderData = await this.makeCheckoutUseCase.execute({
+        customerId: request.body.customerId,
+        items: request.body.items,
+        orderAmount: request.body.orderAmount,
+        payment: request.body.payment,
+      })
+      return HttpResponseHelper.onSucess(response, { data: orderData })
     } catch (error) {
       return HttpResponseHelper.onError(response, { error })
     }

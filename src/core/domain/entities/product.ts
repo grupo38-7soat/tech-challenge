@@ -7,7 +7,7 @@ export enum Category {
   SOBREMESA = 'SOBREMESA',
 }
 
-type SerializedProduct = {
+export type SerializedProduct = {
   id: number
   name: string
   description: string

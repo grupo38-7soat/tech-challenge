@@ -44,11 +44,11 @@ export class CustomerRepository implements ICustomerRepository {
     }
   }
 
-  async findCustomerByDocument(document: string): Promise<Customer> {
+  async findCustomerByParam(param: string, value: unknown): Promise<Customer> {
     try {
       const { rows } = await this.postgresConnectionAdapter.query<CustomerData>(
-        `SELECT * FROM ${this.table} WHERE document = $1::text LIMIT 1`,
-        [document],
+        `SELECT * FROM ${this.table} WHERE ${param} = $1 LIMIT 1`,
+        [value],
       )
       if (!rows || !rows.length) return null
       return new Customer(
