@@ -22,19 +22,51 @@ create table if not exists fast_food.customer (
     constraint pk_customer primary key (id)
 );
 
+create type fast_food.payment_type_enum as enum (
+  'DINHEIRO',
+  'CARTAO_CREDITO',
+  'CARTAO_DEBITO',
+  'PIX',
+  'VALE_REFEICAO'
+);
+
+create type fast_food.payment_status_enum as enum (
+  'PENDENTE',
+  'AUTORIZADO',
+  'REJEITADO',
+  'REEMBOLSADO'
+);
+
+create table if not exists fast_food.payment(
+    id serial,
+    effective_date timestamp default current_timestamp,
+    type fast_food.payment_type_enum not null,
+    status fast_food.payment_status_enum not null default 'PENDENTE',
+    constraint pk_payment primary key (id)
+);
+
+create type fast_food.order_status_enum as enum (
+  'RECEBIDO',
+  'EM_PREPARO',
+  'PRONTO',
+  'FINALIZADO',
+  'CANCELADO'
+);
+
 create table if not exists fast_food.order (
     id bigserial,
     customer_id uuid,
-    order_date timestamp default current_timestamp,
-    amount numeric(10, 2) not null,
-    status varchar(255) not null default 'Pedido Recebido',
+    total_amount numeric(10, 2) not null,
+    status fast_food.order_status_enum not null default 'RECEBIDO',
+    payment_id integer not null,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp,
     constraint pk_order primary key (id),
-    constraint fk_order_customer foreign key (customer_id) references fast_food.customer(id)
+    constraint fk_order_customer foreign key (customer_id) references fast_food.customer(id),
+    constraint fk_order_payment foreign key (payment_id) references fast_food.payment(id)
 );
 
-create type category_enum as enum (
+create type fast_food.category_enum as enum (
   'LANCHE',
   'ACOMPANHAMENTO',
   'BEBIDA',
@@ -47,7 +79,7 @@ create table if not exists fast_food.product (
     description text not null,
     price decimal(10, 2) not null,
     image_links text[],
-    category category_enum not null,
+    category fast_food.category_enum not null,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp,
     constraint pk_product primary key (id)
@@ -65,28 +97,4 @@ create table if not exists fast_food.product_order (
     constraint pk_product_order primary key (id),
     constraint fk_product_order_product foreign key (product_id) references fast_food.product(id),
     constraint fk_product_order_order foreign key (order_id) references fast_food.order(id)
-);
-
-create table if not exists fast_food.payment_type(
-    id serial,
-    name varchar(255),
-    constraint pk_payment_type primary key (id)
-);
-
-create table if not exists fast_food.payment_status (
-    id serial,
-    name varchar(100),
-    constraint pk_payment_status primary key (id)
-);
-
-create table if not exists fast_food.payment(
-    id serial,
-    payment_date timestamp default current_timestamp,
-    order_id integer,
-    payment_type_id integer,
-    status_payment_id integer,
-    constraint pk_payment primary key (id),
-    constraint fk_payment_order foreign key (order_id) references fast_food.order(id),
-    constraint fk_payment_payment_type foreign key (payment_type_id) references fast_food.payment_type(id),
-    constraint fk_payment_payment_status foreign key (status_payment_id) references fast_food.payment_status(id)
 );
