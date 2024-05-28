@@ -38,10 +38,11 @@ create type fast_food.payment_status_enum as enum (
 );
 
 create table if not exists fast_food.payment(
-    id serial,
+    id uuid,
     effective_date timestamp default current_timestamp,
     type fast_food.payment_type_enum not null,
     status fast_food.payment_status_enum not null default 'PENDENTE',
+    updated_at timestamp default current_timestamp,
     constraint pk_payment primary key (id)
 );
 
@@ -58,7 +59,7 @@ create table if not exists fast_food.order (
     customer_id uuid,
     total_amount numeric(10, 2) not null,
     status fast_food.order_status_enum not null default 'RECEBIDO',
-    payment_id integer not null,
+    payment_id uuid not null,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp,
     constraint pk_order primary key (id),
