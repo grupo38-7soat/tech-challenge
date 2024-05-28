@@ -1,0 +1,22 @@
+# Node artifact files
+dist/
+node_modules/
+/*.js
+
+scripts/
+
+# Coverage
+coverage/
+
+# Yarn
+.yarn/*
+
+# Schemas graphql
+src/schemas.graphql
+
+# Enviroments
+.env
+.env.development
+.env.homolog
+.env.staging
+.env.production
