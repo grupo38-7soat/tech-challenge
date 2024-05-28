@@ -7,12 +7,13 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: tech_challenge
-      POSTGRES_PASSWORD: tech_challenge_123
-      POSTGRES_DB: techchallengedb
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
-     #- postgres_data:/var/lib/postgresql/data # Change it
      - ./database:/docker-entrypoint-initdb.d/
+    networks:
+     - tech-challenge
 
   node:
     build: .
@@ -21,10 +22,13 @@ services:
     depends_on:
       - postgres
     environment:
-      DB_HOST: postgres:5432
-      DB_USER: tech_challenge
-      DB_PASSWORD: tech_challenge_123
-      DB_NAME: techchallengedb
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USER=${POSTGRES_USER}
+      - DATABASE_PASSWORD=${POSTGRES_PASSWORD}
+      - DATABASE_NAME=${POSTGRES_DB}
+    networks:
+     - tech-challenge
 
-#volumes:
-#  postgres_data:
+networks:
+  tech-challenge:
