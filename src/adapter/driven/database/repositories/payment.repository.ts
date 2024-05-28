@@ -1,6 +1,6 @@
 import { Payment, PaymentCurrentStatus } from '@core/domain/entities'
 import { IPaymentRepository, PaymentParams } from '@core/domain/repositories'
-import { DomainException } from '@core/domain/base'
+import { DomainException, ExceptionCause } from '@core/domain/base'
 import { PostgresConnectionAdapter } from '../postgres-connection.adapter'
 
 export class PaymentRepository implements IPaymentRepository {
@@ -13,14 +13,43 @@ export class PaymentRepository implements IPaymentRepository {
     console.log(this.postgresConnectionAdapter)
   }
 
-  async savePayment(Payment: Payment): Promise<void> {
-    console.log(Payment)
-    throw new DomainException('savePayment not implemented.')
+  async savePayment(payment: Payment): Promise<void> {
+    try {
+      await this.postgresConnectionAdapter.query(
+        `
+          INSERT INTO ${this.table}(id, effective_date, type)
+          VALUES($1::uuid, $2::timestamp, $3::fast_food.payment_type_enum)
+        `,
+        [payment.getId(), payment.getEffectiveDate(), payment.getType()],
+      )
+    } catch (error) {
+      console.error(error)
+      throw new DomainException(
+        'Erro ao criar pagamento',
+        ExceptionCause.PERSISTANCE_EXCEPTION,
+      )
+    }
   }
 
-  async updatePaymentStatus(status: PaymentCurrentStatus): Promise<Payment> {
-    console.log(status)
-    throw new DomainException('updatePaymentStatus not implemented.')
+  async updatePaymentStatus(
+    id: string,
+    status: PaymentCurrentStatus,
+  ): Promise<void> {
+    try {
+      await this.postgresConnectionAdapter.query(
+        `
+          UPDATE ${this.table} SET status = $1::fast_food.payment_status_enum,
+          updated_at = current_timestamp WHERE id = $2::uuid
+        `,
+        [status, id],
+      )
+    } catch (error) {
+      console.error(error)
+      throw new DomainException(
+        'Erro ao atualizar o status do pagamento',
+        ExceptionCause.PERSISTANCE_EXCEPTION,
+      )
+    }
   }
 
   async findAllPayments(params?: PaymentParams): Promise<Payment[]> {

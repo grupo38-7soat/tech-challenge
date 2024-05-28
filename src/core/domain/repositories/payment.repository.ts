@@ -9,6 +9,6 @@ export type PaymentParams = {
 
 export interface IPaymentRepository {
   savePayment(Payment: Payment): Promise<void>
-  updatePaymentStatus(status: PaymentCurrentStatus): Promise<Payment>
+  updatePaymentStatus(id: string, status: PaymentCurrentStatus): Promise<void>
   findAllPayments(params?: PaymentParams): Promise<Payment[]>
 }

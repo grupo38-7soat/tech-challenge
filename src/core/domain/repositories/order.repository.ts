@@ -9,6 +9,6 @@ export type OrderParams = {
 
 export interface IOrderRepository {
   saveOrder(order: Order): Promise<number>
-  updateOrderStatus(status: OrderCurrentStatus): Promise<Order>
+  updateOrderStatus(status: OrderCurrentStatus): Promise<void>
   findAllOrders(params?: OrderParams): Promise<Order[]>
 }

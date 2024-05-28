@@ -24,7 +24,6 @@ type SerializedOrder = {
 
 export class Order {
   private id: number
-  private effectiveDate: string
   private totalAmount: number
   private status: OrderStatus
   private customer?: Customer
@@ -34,7 +33,6 @@ export class Order {
   private updatedAt: string
 
   constructor(
-    effectiveDate: string,
     totalAmount: number,
     status: OrderCurrentStatus,
     items: Product[],
@@ -44,16 +42,14 @@ export class Order {
     createdAt?: string,
     updatedAt?: string,
   ) {
+    this.status = OrderStatusFactory.create(this, status)
     this.setId(id)
-    this.setEffectiveDate(effectiveDate)
-    this.setTotalAmount(totalAmount)
     this.setItems(items)
+    this.setTotalAmount(totalAmount)
     this.setPayment(payment)
-    this.setCustomer(customer)
     this.setCustomer(customer)
     this.setCreatedAt(createdAt)
     this.setUpdatedAt(updatedAt)
-    this.status = OrderStatusFactory.create(this, status)
   }
 
   private setId(id: number): void {
@@ -90,15 +86,6 @@ export class Order {
     return this.totalAmount
   }
 
-  private setEffectiveDate(value: string): void {
-    // TODO: validar data e hora
-    this.effectiveDate = value
-  }
-
-  public getEffectiveDate(): string {
-    return this.effectiveDate
-  }
-
   public setStatus(status: OrderStatus): void {
     this.status = status
   }
@@ -126,7 +113,7 @@ export class Order {
   }
 
   private setPayment(value: Payment): void {
-    if (this.payment.getPaymentStatus() === PaymentCurrentStatus.PENDENTE) {
+    if (value.getPaymentStatus() === PaymentCurrentStatus.PENDENTE) {
       throw new DomainException(
         'O pagamento precisa ser aprovado',
         ExceptionCause.BUSINESS_EXCEPTION,
@@ -162,7 +149,7 @@ export class Order {
   public toJson(): SerializedOrder {
     return {
       id: this.id,
-      effectiveDate: this.effectiveDate,
+      effectiveDate: this.createdAt,
       totalAmount: this.totalAmount,
       status: this.getStatus(),
       customer: this.customer.toJson(),

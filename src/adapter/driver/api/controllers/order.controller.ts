@@ -17,12 +17,6 @@ export class OrderController implements IOrderController {
     response: ExpressResponse,
   ): Promise<ExpressResponse> {
     try {
-      console.log('Rota: ', {
-        url: request.url,
-        method: request.method,
-        body: request.body,
-        params: request.params,
-      })
       const orderData = await this.makeCheckoutUseCase.execute({
         customerId: request.body.customerId,
         items: request.body.items,

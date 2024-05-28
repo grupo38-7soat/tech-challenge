@@ -76,14 +76,14 @@ export class MakeCheckoutUseCase implements IMakeCheckoutUseCase {
       currentDate,
       orderPaymentId,
     )
-    await this.paymentRepository.savePayment(orderPayment) // TODO: parei aqui
+    await this.paymentRepository.savePayment(orderPayment)
     // TODO: adicionar meio de pagamento nesse ponto futuramente
-    // orderPayment.authorizePayment()
-    // await this.paymentRepository.updatePaymentStatus(
-    //   orderPayment.getPaymentStatus(),
-    // )
+    orderPayment.authorizePayment()
+    await this.paymentRepository.updatePaymentStatus(
+      orderPaymentId,
+      orderPayment.getPaymentStatus(),
+    )
     const order = new Order(
-      currentDate,
       orderAmount,
       OrderCurrentStatus.RECEBIDO,
       orderItems,
