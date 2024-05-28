@@ -1,11 +1,11 @@
 import { PaymentStatus, PaymentStatusFactory } from '../value-objects'
 
 export enum PaymentType {
-  DINHEIRO = 1,
-  CARTAO_CREDITO = 2,
-  CARTAO_DEBITO = 3,
-  PIX = 4,
-  VALE_REFEICAO = 5,
+  DINHEIRO = 'DINHEIRO',
+  CARTAO_CREDITO = 'CARTAO_CREDITO',
+  CARTAO_DEBITO = 'CARTAO_DEBITO',
+  PIX = 'PIX',
+  VALE_REFEICAO = 'VALE_REFEICAO',
 }
 
 export enum PaymentCurrentStatus {
