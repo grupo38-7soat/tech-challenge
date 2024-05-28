@@ -29,7 +29,7 @@ export class ProductRepository implements IProductRepository {
         ? [
             `
               INSERT INTO ${this.table} (name, description, price, category, image_links)
-              VALUES ($1::text, $2::text, $3::numeric, $4::category_enum, $5::text[])
+              VALUES ($1::text, $2::text, $3::numeric, $4::fast_food.category_enum, $5::text[])
               RETURNING id
             `,
             [
@@ -43,7 +43,7 @@ export class ProductRepository implements IProductRepository {
         : [
             `
               UPDATE ${this.table} SET name = $1::text, description = $2::text, price = $3::numeric,
-              category = $4::category_enum, image_links = $5::text[], updated_at = current_timestamp WHERE id = $6::int
+              category = $4::fast_food.category_enum, image_links = $5::text[], updated_at = current_timestamp WHERE id = $6::int
               RETURNING id
             `,
             [
