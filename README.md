@@ -1,6 +1,6 @@
 # tech-challenge - Grupo 38-7SOAT
 
-## Docker
+## Iniciar a aplicação
 
 Para iniciar os serviços com o docker-compose, utilize o comando abaixo na raiz do repositório do projeto:
 
