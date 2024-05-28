@@ -69,16 +69,6 @@ export class Order {
         ExceptionCause.BUSINESS_EXCEPTION,
       )
     }
-    const allProductsAmount = this.items.reduce(
-      (total, currentItem) => total + currentItem.getPrice(),
-      0,
-    )
-    if (allProductsAmount !== value) {
-      throw new DomainException(
-        'O valor total deve ser válido',
-        ExceptionCause.BUSINESS_EXCEPTION,
-      )
-    }
     this.totalAmount = value
   }
 

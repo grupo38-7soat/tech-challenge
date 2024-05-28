@@ -72,14 +72,25 @@ export class MakeCheckoutUseCase implements IMakeCheckoutUseCase {
         observation: item.observation,
       })
     }
-    const currentDate = new Date().toISOString()
-    const orderPaymentId = randomUUID()
+    const products = this.transformOrderItemsToProducts(orderItems)
+    const allProductsAmount = products.reduce(
+      (total, currentItem) => total + currentItem.getPrice(),
+      0,
+    )
+    if (allProductsAmount !== orderAmount) {
+      throw new DomainException(
+        'O valor total deve ser válido',
+        ExceptionCause.BUSINESS_EXCEPTION,
+      )
+    }
     if (!(payment.type in PaymentType)) {
       throw new DomainException(
         'Informe uma opção de pagamento válida',
         ExceptionCause.INVALID_DATA,
       )
     }
+    const currentDate = new Date().toISOString()
+    const orderPaymentId = randomUUID()
     const orderPayment = new Payment(
       payment.type,
       PaymentCurrentStatus.PENDENTE,
@@ -96,7 +107,7 @@ export class MakeCheckoutUseCase implements IMakeCheckoutUseCase {
     const order = new Order(
       orderAmount,
       OrderCurrentStatus.RECEBIDO,
-      this.transformOrderItemsToProducts(orderItems),
+      products,
       orderPayment,
       customer,
     )
