@@ -5,6 +5,7 @@ import {
 } from '@core/application/use-cases'
 import { IOrderController } from './types/controllers'
 import { HttpResponseHelper } from '../helpers'
+import { OrderCurrentStatus } from '@core/domain/entities'
 
 export class OrderController implements IOrderController {
   constructor(
@@ -40,8 +41,11 @@ export class OrderController implements IOrderController {
         body: request.body,
         params: request.params,
       })
-      const data = await this.searchOrdersUseCase.execute({})
-      return HttpResponseHelper.onSucess(response, data)
+      const orderData = await this.searchOrdersUseCase.execute({
+        id: request.query.id ? Number(request.query.id) : undefined,
+        status: request.query.status as OrderCurrentStatus,
+      })
+      return HttpResponseHelper.onSucess(response, { data: orderData })
     } catch (error) {
       return HttpResponseHelper.onError(response, { error })
     }

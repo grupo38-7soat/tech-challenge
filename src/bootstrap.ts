@@ -43,7 +43,7 @@ const makeCheckoutUseCase = new MakeCheckoutUseCase(
   paymentRepository,
   orderRepository,
 )
-const searchOrdersUseCase = new SearchOrdersUseCase()
+const searchOrdersUseCase = new SearchOrdersUseCase(orderRepository)
 // controllers
 const customerController = new CustomerController(
   createCustomerUseCase,

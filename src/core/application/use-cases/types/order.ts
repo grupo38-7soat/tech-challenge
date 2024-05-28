@@ -41,14 +41,24 @@ export type MakeCheckoutOutput = {
   }
 }
 
-export type SearchOrdersInput = {}
+export type SearchOrdersInput = {
+  id: number
+  status: OrderCurrentStatus
+}
 
-export type SearchOrdersOutput = {}
+export type SearchOrdersOutput = {
+  id: number
+  status: OrderCurrentStatus
+  effectiveDate: string
+  totalAmount: number
+  paymentId: string
+  customerId: string
+}
 
 export interface IMakeCheckoutUseCase {
   execute(input: MakeCheckoutInput): Promise<MakeCheckoutOutput>
 }
 
 export interface ISearchOrdersUseCase {
-  execute(input: SearchOrdersInput): Promise<SearchOrdersOutput>
+  execute(input: SearchOrdersInput): Promise<SearchOrdersOutput[]>
 }
