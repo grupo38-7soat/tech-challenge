@@ -21,6 +21,12 @@ import {
   MakeCheckoutOutput,
 } from '../types/order'
 
+type OrderItem = {
+  product: Product
+  quantity: number
+  observation: string
+}
+
 export class MakeCheckoutUseCase implements IMakeCheckoutUseCase {
   constructor(
     private readonly customerRepository: ICustomerRepository,
@@ -48,7 +54,7 @@ export class MakeCheckoutUseCase implements IMakeCheckoutUseCase {
         )
       }
     }
-    const orderItems: Product[] = []
+    const orderItems: OrderItem[] = []
     for (const item of items) {
       const product = await this.productRepository.findProductByParam(
         'id',
@@ -60,7 +66,11 @@ export class MakeCheckoutUseCase implements IMakeCheckoutUseCase {
           ExceptionCause.NOTFOUND_EXCEPTION,
         )
       }
-      orderItems.push(product)
+      orderItems.push({
+        product,
+        quantity: item.quantity,
+        observation: item.observation,
+      })
     }
     const currentDate = new Date().toISOString()
     const orderPaymentId = randomUUID()
@@ -86,14 +96,22 @@ export class MakeCheckoutUseCase implements IMakeCheckoutUseCase {
     const order = new Order(
       orderAmount,
       OrderCurrentStatus.RECEBIDO,
-      orderItems,
+      this.transformOrderItemsToProducts(orderItems),
       orderPayment,
       customer,
     )
     const orderId = await this.orderRepository.saveOrder(order)
+    for (const item of orderItems) {
+      await this.orderRepository.saveOrderProduct({
+        orderId,
+        productId: item.product.getId(),
+        quantity: item.quantity,
+        price: item.product.getPrice(),
+        observation: item.observation,
+      })
+    }
     const {
       status,
-      effectiveDate,
       totalAmount,
       payment: serializedPayment,
       customer: serializedCustomer,
@@ -102,7 +120,7 @@ export class MakeCheckoutUseCase implements IMakeCheckoutUseCase {
       order: {
         id: orderId,
         status,
-        effectiveDate,
+        effectiveDate: currentDate,
         totalAmount,
       },
       payment: {
@@ -116,7 +134,16 @@ export class MakeCheckoutUseCase implements IMakeCheckoutUseCase {
         name: serializedCustomer.name,
         email: serializedCustomer.email,
       },
-      createdAt: order.getCreatedAt(),
     }
+  }
+
+  private transformOrderItemsToProducts(orderItems: OrderItem[]): Product[] {
+    const products: Product[] = []
+    orderItems.forEach(item => {
+      for (let i = 0; i < item.quantity; i++) {
+        products.push(item.product)
+      }
+    })
+    return products
   }
 }

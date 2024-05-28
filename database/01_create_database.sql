@@ -88,8 +88,8 @@ create table if not exists fast_food.product (
 
 create table if not exists fast_food.product_order (
     id bigserial,
-    order_id integer,
-    product_id integer,
+    order_id integer not null,
+    product_id integer not null,
     quantity integer not null,
     unit_price decimal(10, 2) not null,
     observation text,

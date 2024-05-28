@@ -39,7 +39,6 @@ export type MakeCheckoutOutput = {
     email: string
     document: string
   }
-  createdAt: string
 }
 
 export type SearchOrdersInput = {}

@@ -35,7 +35,7 @@ export class Order {
   constructor(
     totalAmount: number,
     status: OrderCurrentStatus,
-    items: Product[],
+    products: Product[],
     payment: Payment,
     customer?: Customer,
     id?: number,
@@ -44,7 +44,7 @@ export class Order {
   ) {
     this.status = OrderStatusFactory.create(this, status)
     this.setId(id)
-    this.setItems(items)
+    this.setProducts(products)
     this.setTotalAmount(totalAmount)
     this.setPayment(payment)
     this.setCustomer(customer)
@@ -104,7 +104,7 @@ export class Order {
     return this.customer
   }
 
-  private setItems(items: Product[]): void {
+  private setProducts(items: Product[]): void {
     this.items = items
   }
 

@@ -1,5 +1,9 @@
 import { Order, OrderCurrentStatus } from '@core/domain/entities'
-import { IOrderRepository, OrderParams } from '@core/domain/repositories'
+import {
+  IOrderRepository,
+  OrderParams,
+  OrderProduct,
+} from '@core/domain/repositories'
 import { DomainException, ExceptionCause } from '@core/domain/base'
 import { PostgresConnectionAdapter } from '../postgres-connection.adapter'
 
@@ -35,7 +39,31 @@ export class OrderRepository implements IOrderRepository {
     } catch (error) {
       console.error(error)
       throw new DomainException(
-        'Erro ao criar pagamento',
+        'Erro ao criar pedido',
+        ExceptionCause.PERSISTANCE_EXCEPTION,
+      )
+    }
+  }
+
+  async saveOrderProduct({
+    orderId,
+    productId,
+    quantity,
+    price,
+    observation,
+  }: OrderProduct): Promise<void> {
+    try {
+      await this.postgresConnectionAdapter.query<{ id: number }>(
+        `
+          INSERT INTO fast_food.product_order(order_id, product_id, quantity, unit_price, observation)
+          VALUES($1::integer, $2::integer, $3::integer, $4::numeric, $5::text)
+        `,
+        [orderId, productId, quantity, price, observation],
+      )
+    } catch (error) {
+      console.error(error)
+      throw new DomainException(
+        'Erro ao salvar produto do pedido',
         ExceptionCause.PERSISTANCE_EXCEPTION,
       )
     }
