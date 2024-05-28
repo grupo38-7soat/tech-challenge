@@ -139,12 +139,14 @@ export class MakeCheckoutUseCase implements IMakeCheckoutUseCase {
         status: serializedPayment.paymentStatus,
         type: serializedPayment.type,
       },
-      customer: {
-        id: serializedCustomer.id,
-        document: serializedCustomer.document,
-        name: serializedCustomer.name,
-        email: serializedCustomer.email,
-      },
+      customer: serializedCustomer
+        ? {
+            id: serializedCustomer.id,
+            document: serializedCustomer.document,
+            name: serializedCustomer.name,
+            email: serializedCustomer.email,
+          }
+        : undefined,
     }
   }
 

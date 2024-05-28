@@ -142,7 +142,7 @@ export class Order {
       effectiveDate: this.createdAt,
       totalAmount: this.totalAmount,
       status: this.getStatus(),
-      customer: this.customer.toJson(),
+      customer: this.customer ? this.customer.toJson() : null,
       items: [],
       payment: this.payment.toJson(),
     }
