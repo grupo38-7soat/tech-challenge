@@ -24,4 +24,4 @@ Todos os endpoints estão disponíveis para consulta via [Swagger](http://localh
 
 ## Miro
 
-Os detalhes da arquitetura estão disponíveis no [Miro](https://miro.com/app/board/uXjVKUHWBkY=/?share_link_id=42148422473).
+A documentação do sistema (DDD) com Event Storming está disponível no [Miro](https://miro.com/app/board/uXjVKUHWBkY=/?share_link_id=42148422473).
