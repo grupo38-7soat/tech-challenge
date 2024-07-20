@@ -55,10 +55,25 @@ export type SearchOrdersOutput = {
   customerId: string
 }
 
+export type GetOrderPaymentInput = {
+  orderId: number
+}
+
+export type GetOrderPaymentOutput = {
+  id: string
+  status: PaymentCurrentStatus
+  type: PaymentType
+  effectiveDate: string
+}
+
 export interface IMakeCheckoutUseCase {
   execute(input: MakeCheckoutInput): Promise<MakeCheckoutOutput>
 }
 
 export interface ISearchOrdersUseCase {
   execute(input: SearchOrdersInput): Promise<SearchOrdersOutput[]>
+}
+
+export interface IGetOrderPaymentUseCase {
+  execute(input: GetOrderPaymentInput): Promise<GetOrderPaymentOutput>
 }

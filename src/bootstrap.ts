@@ -2,6 +2,7 @@ import {
   CreateCustomerUseCase,
   CreateProductUseCase,
   GetCustomerByDocumentUseCase,
+  GetOrderPaymentUseCase,
   MakeCheckoutUseCase,
   RemoveProductUseCase,
   SearchOrdersUseCase,
@@ -44,6 +45,7 @@ const makeCheckoutUseCase = new MakeCheckoutUseCase(
   orderRepository,
 )
 const searchOrdersUseCase = new SearchOrdersUseCase(orderRepository)
+const getOrderPaymentUseCase = new GetOrderPaymentUseCase(paymentRepository)
 // controllers
 const customerController = new CustomerController(
   createCustomerUseCase,
@@ -58,6 +60,7 @@ const productController = new ProductController(
 const orderController = new OrderController(
   makeCheckoutUseCase,
   searchOrdersUseCase,
+  getOrderPaymentUseCase,
 )
 const server: IHttpServer = new ExpressHttpServerAdapter(
   customerController,

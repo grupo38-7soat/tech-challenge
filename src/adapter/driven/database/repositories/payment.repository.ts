@@ -1,7 +1,19 @@
-import { Payment, PaymentCurrentStatus } from '@core/domain/entities'
+import {
+  Payment,
+  PaymentCurrentStatus,
+  PaymentType,
+} from '@core/domain/entities'
 import { IPaymentRepository, PaymentParams } from '@core/domain/repositories'
 import { DomainException, ExceptionCause } from '@core/domain/base'
 import { PostgresConnectionAdapter } from '../postgres-connection.adapter'
+
+type PaymentData = {
+  id: string
+  status: PaymentCurrentStatus
+  type: PaymentType
+  effective_date: string
+  updated_at: string
+}
 
 export class PaymentRepository implements IPaymentRepository {
   table: string
@@ -10,7 +22,6 @@ export class PaymentRepository implements IPaymentRepository {
     private readonly postgresConnectionAdapter: PostgresConnectionAdapter,
   ) {
     this.table = 'fast_food.payment'
-    console.log(this.postgresConnectionAdapter)
   }
 
   async savePayment(payment: Payment): Promise<void> {
@@ -55,5 +66,30 @@ export class PaymentRepository implements IPaymentRepository {
   async findAllPayments(params?: PaymentParams): Promise<Payment[]> {
     console.log(params)
     throw new DomainException('findAllPayments not implemented.')
+  }
+
+  async findPaymentByOrderId(orderId: number): Promise<Payment> {
+    try {
+      const { rows } = await this.postgresConnectionAdapter.query<PaymentData>(
+        `
+          SELECT p.id, p.status, p.type, p.effective_date, p.updated_at FROM ${this.table} p join fast_food."order" o
+          ON o.payment_id = p.id WHERE o.id = $1::integer;
+        `,
+        [orderId],
+      )
+      if (!rows || !rows.length) return null
+      return new Payment(
+        rows[0].type,
+        rows[0].status,
+        rows[0].effective_date,
+        rows[0].id,
+      )
+    } catch (error) {
+      console.error(error)
+      throw new DomainException(
+        'Erro ao consultar o pagamento',
+        ExceptionCause.PERSISTANCE_EXCEPTION,
+      )
+    }
   }
 }

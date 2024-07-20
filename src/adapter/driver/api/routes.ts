@@ -92,4 +92,14 @@ export const orderRoutes: IRouteProps[] = [
     ) => next(),
     handler: 'searchOrders',
   },
+  {
+    resource: '/pedidos/:id/pagamento',
+    method: HttpMethod.GET,
+    middleware: (
+      _request: ExpressRequest,
+      _response: ExpressResponse,
+      next: ExpressNextFuction,
+    ) => next(),
+    handler: 'getOrderPayment',
+  },
 ]
