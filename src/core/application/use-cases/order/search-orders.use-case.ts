@@ -1,5 +1,5 @@
 import { IOrderRepository, OrderParams } from '@core/domain/repositories'
-import { OrderCurrentStatus } from '@core/domain/entities'
+import { Order, OrderCurrentStatus } from '@core/domain/entities'
 import { DomainException, ExceptionCause } from '@core/domain/base'
 import {
   ISearchOrdersUseCase,
@@ -26,17 +26,33 @@ export class SearchOrdersUseCase implements ISearchOrdersUseCase {
       params.status = { exactMatch: true, value: status }
     }
     const orders = await this.orderRepository.findAllOrders(params)
-    return orders.map(order => {
-      const { id, status, effectiveDate, totalAmount, payment, customer } =
-        order.toJson()
-      return {
-        id,
-        status,
-        effectiveDate,
-        totalAmount,
-        paymentId: payment.id,
-        customerId: customer.id,
+    const readyOrders: Order[] = []
+    const inProgressOrders: Order[] = []
+    const receivedOrders: Order[] = []
+    orders.forEach(order => {
+      if (order.getStatus() === OrderCurrentStatus.PRONTO) {
+        readyOrders.push(order)
+      }
+      if (order.getStatus() === OrderCurrentStatus.EM_PREPARO) {
+        inProgressOrders.push(order)
+      }
+      if (order.getStatus() === OrderCurrentStatus.RECEBIDO) {
+        receivedOrders.push(order)
       }
     })
+    return [...readyOrders, ...inProgressOrders, ...receivedOrders].map(
+      order => {
+        const { id, status, effectiveDate, totalAmount, payment, customer } =
+          order.toJson()
+        return {
+          id,
+          status,
+          effectiveDate,
+          totalAmount,
+          paymentId: payment.id,
+          customerId: customer.id,
+        }
+      },
+    )
   }
 }
