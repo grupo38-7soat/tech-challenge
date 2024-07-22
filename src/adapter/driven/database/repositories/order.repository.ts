@@ -117,10 +117,12 @@ export class OrderRepository implements IOrderRepository {
           c.email AS customer_email
         FROM
           ${this.table} o
-        JOIN
+        LEFT JOIN
           fast_food.customer c ON o.customer_id = c.id
         JOIN
           fast_food.payment p ON o.payment_id = p.id
+        WHERE o.status != 'FINALIZADO' AND o.status != 'CANCELADO'
+        ORDER BY o.created_at ASC
       `
       const [query, paramsList] = !haveParams
         ? [baseQuery, []]
@@ -147,12 +149,15 @@ export class OrderRepository implements IOrderRepository {
           row.payment_effective_date,
           row.payment_id,
         )
-        const customer = new Customer(
-          row.customer_document,
-          row.customer_name,
-          row.customer_email,
-          row.customer_id,
-        )
+        let customer = null
+        if (row.customer_id) {
+          customer = new Customer(
+            row.customer_document,
+            row.customer_name,
+            row.customer_email,
+            row.customer_id,
+          )
+        }
         return new Order(
           Number(row.total_amount),
           row.status,

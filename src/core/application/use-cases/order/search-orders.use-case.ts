@@ -50,7 +50,7 @@ export class SearchOrdersUseCase implements ISearchOrdersUseCase {
           effectiveDate,
           totalAmount,
           paymentId: payment.id,
-          customerId: customer.id,
+          customerId: customer?.id,
         }
       },
     )
