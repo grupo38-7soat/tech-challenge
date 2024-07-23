@@ -14,7 +14,7 @@ export class GetOrderPaymentUseCase implements IGetOrderPaymentUseCase {
   }: GetOrderPaymentInput): Promise<GetOrderPaymentOutput> {
     if (!orderId) {
       throw new DomainException(
-        'O status deve ser válido',
+        'O id do pedido deve ser informado',
         ExceptionCause.MISSING_DATA,
       )
     }

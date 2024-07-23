@@ -66,6 +66,17 @@ export type GetOrderPaymentOutput = {
   effectiveDate: string
 }
 
+export type UpdateOrderStatusInput = {
+  orderId: number
+  status: OrderCurrentStatus
+}
+
+export type UpdateOrderStatusOutput = {
+  previousStatus: OrderCurrentStatus
+  currentStatus: OrderCurrentStatus
+  updatedAt: string
+}
+
 export interface IMakeCheckoutUseCase {
   execute(input: MakeCheckoutInput): Promise<MakeCheckoutOutput>
 }
@@ -76,4 +87,8 @@ export interface ISearchOrdersUseCase {
 
 export interface IGetOrderPaymentUseCase {
   execute(input: GetOrderPaymentInput): Promise<GetOrderPaymentOutput>
+}
+
+export interface IUpdateOrderStatusUseCase {
+  execute(input: UpdateOrderStatusInput): Promise<UpdateOrderStatusOutput>
 }

@@ -37,7 +37,6 @@ export class OrderRepository implements IOrderRepository {
     private readonly postgresConnectionAdapter: PostgresConnectionAdapter,
   ) {
     this.table = 'fast_food.order'
-    console.log(this.postgresConnectionAdapter)
   }
 
   async saveOrder(order: Order): Promise<number> {
@@ -92,9 +91,40 @@ export class OrderRepository implements IOrderRepository {
     }
   }
 
-  async updateOrderStatus(status: OrderCurrentStatus): Promise<void> {
-    console.log(status)
-    throw new DomainException('updateOrderStatus not implemented.')
+  async updateOrderStatus(
+    orderId: number,
+    status: OrderCurrentStatus,
+  ): Promise<Order> {
+    try {
+      const { rows } = await this.postgresConnectionAdapter.query<{
+        status: OrderCurrentStatus
+        updated_at: string
+      }>(
+        `
+          UPDATE ${this.table} SET status = $1::fast_food.order_status_enum, updated_at = current_timestamp
+          WHERE id = $2::integer
+          RETURNING status, updated_at
+        `,
+        [status, orderId],
+      )
+      if (!rows || !rows.length) return null
+      return new Order(
+        0,
+        rows[0].status,
+        [],
+        null,
+        null,
+        null,
+        null,
+        rows[0].updated_at,
+      )
+    } catch (error) {
+      console.error(error)
+      throw new DomainException(
+        'Erro ao atualizar o status do pedido',
+        ExceptionCause.PERSISTANCE_EXCEPTION,
+      )
+    }
   }
 
   async findAllOrders(params?: OrderParams): Promise<Order[]> {
@@ -173,6 +203,69 @@ export class OrderRepository implements IOrderRepository {
       console.error(error)
       throw new DomainException(
         'Erro ao consultar pedidos',
+        ExceptionCause.PERSISTANCE_EXCEPTION,
+      )
+    }
+  }
+
+  async findOrderById(orderId: number): Promise<Order> {
+    try {
+      const { rows } = await this.postgresConnectionAdapter.query<OrderData>(
+        `
+          SELECT
+          o.id,
+          o.total_amount,
+          o.status,
+          o.customer_id,
+          o.payment_id,
+          o.created_at AS effective_date,
+          o.updated_at,
+          p.type AS payment_type,
+          p.status AS payment_status,
+          p.effective_date AS payment_effective_date,
+          c.name AS customer_name,
+          c.document AS customer_document,
+          c.email AS customer_email
+        FROM
+          ${this.table} o
+        LEFT JOIN
+          fast_food.customer c ON o.customer_id = c.id
+        JOIN
+          fast_food.payment p ON o.payment_id = p.id
+        WHERE o.id = $1::integer LIMIT 1
+        `,
+        [orderId],
+      )
+      if (!rows || !rows.length) return null
+      const payment = new Payment(
+        rows[0].payment_type,
+        rows[0].payment_status,
+        rows[0].payment_effective_date,
+        rows[0].payment_id,
+      )
+      let customer = null
+      if (rows[0].customer_id) {
+        customer = new Customer(
+          rows[0].customer_document,
+          rows[0].customer_name,
+          rows[0].customer_email,
+          rows[0].customer_id,
+        )
+      }
+      return new Order(
+        Number(rows[0].total_amount),
+        rows[0].status,
+        [],
+        payment,
+        customer,
+        Number(rows[0].id),
+        rows[0].effective_date,
+        rows[0].updated_at,
+      )
+    } catch (error) {
+      console.error(error)
+      throw new DomainException(
+        'Erro ao atualizar o status do pedido',
         ExceptionCause.PERSISTANCE_EXCEPTION,
       )
     }

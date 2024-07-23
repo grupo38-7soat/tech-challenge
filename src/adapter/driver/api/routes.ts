@@ -102,4 +102,14 @@ export const orderRoutes: IRouteProps[] = [
     ) => next(),
     handler: 'getOrderPayment',
   },
+  {
+    resource: '/pedidos/:id/atualizar-status',
+    method: HttpMethod.PUT,
+    middleware: (
+      _request: ExpressRequest,
+      _response: ExpressResponse,
+      next: ExpressNextFuction,
+    ) => next(),
+    handler: 'updateOrderStatus',
+  },
 ]

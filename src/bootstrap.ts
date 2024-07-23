@@ -7,6 +7,7 @@ import {
   RemoveProductUseCase,
   SearchOrdersUseCase,
   SearchProductsUseCase,
+  UpdateOrderStatusUseCase,
   UpdateProductUseCase,
 } from '@core/application/use-cases'
 import { globalEnvs } from '@adapter/config/envs/global'
@@ -46,6 +47,7 @@ const makeCheckoutUseCase = new MakeCheckoutUseCase(
 )
 const searchOrdersUseCase = new SearchOrdersUseCase(orderRepository)
 const getOrderPaymentUseCase = new GetOrderPaymentUseCase(paymentRepository)
+const updateOrderStatusUseCase = new UpdateOrderStatusUseCase(orderRepository)
 // controllers
 const customerController = new CustomerController(
   createCustomerUseCase,
@@ -61,6 +63,7 @@ const orderController = new OrderController(
   makeCheckoutUseCase,
   searchOrdersUseCase,
   getOrderPaymentUseCase,
+  updateOrderStatusUseCase,
 )
 const server: IHttpServer = new ExpressHttpServerAdapter(
   customerController,

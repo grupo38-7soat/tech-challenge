@@ -3,6 +3,7 @@ import {
   IGetOrderPaymentUseCase,
   IMakeCheckoutUseCase,
   ISearchOrdersUseCase,
+  IUpdateOrderStatusUseCase,
 } from '@core/application/use-cases'
 import { IOrderController } from './types/controllers'
 import { HttpResponseHelper } from '../helpers'
@@ -13,6 +14,7 @@ export class OrderController implements IOrderController {
     private readonly makeCheckoutUseCase: IMakeCheckoutUseCase,
     private readonly searchOrdersUseCase: ISearchOrdersUseCase,
     private readonly getOrderPaymentUseCase: IGetOrderPaymentUseCase,
+    private readonly updateOrderStatusUseCase: IUpdateOrderStatusUseCase,
   ) {}
 
   async makeCheckout(
@@ -50,13 +52,30 @@ export class OrderController implements IOrderController {
   async getOrderPayment(
     request: ExpressRequest,
     response: ExpressResponse,
-  ): Promise<unknown> {
+  ): Promise<ExpressResponse> {
     try {
       const orderId = request.params.id
       const orderPaymentData = await this.getOrderPaymentUseCase.execute({
         orderId: Number(orderId),
       })
       return HttpResponseHelper.onSucess(response, { data: orderPaymentData })
+    } catch (error) {
+      return HttpResponseHelper.onError(response, { error })
+    }
+  }
+
+  async updateOrderStatus(
+    request: ExpressRequest,
+    response: ExpressResponse,
+  ): Promise<ExpressResponse> {
+    try {
+      const orderId = request.params.id
+      const status = request.body?.status || ''
+      const updatedOrderData = await this.updateOrderStatusUseCase.execute({
+        orderId: Number(orderId),
+        status,
+      })
+      return HttpResponseHelper.onSucess(response, { data: updatedOrderData })
     } catch (error) {
       return HttpResponseHelper.onError(response, { error })
     }
