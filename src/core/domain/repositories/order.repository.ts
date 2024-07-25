@@ -13,12 +13,17 @@ export type OrderProduct = {
   quantity: number
   price: number
   observation?: string
+  effectiveDate: string
 }
 
 export interface IOrderRepository {
   saveOrder(order: Order): Promise<number>
   saveOrderProduct(orderProduct: OrderProduct): Promise<void>
-  updateOrderStatus(orderId: number, status: OrderCurrentStatus): Promise<Order>
+  updateOrderStatus(
+    orderId: number,
+    status: OrderCurrentStatus,
+    updatedAt: string,
+  ): Promise<Order>
   findAllOrders(params?: OrderParams): Promise<Order[]>
   findOrderById(orderId: number): Promise<Order>
 }

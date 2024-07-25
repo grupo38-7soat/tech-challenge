@@ -46,8 +46,8 @@ export class OrderRepository implements IOrderRepository {
         : null
       const result = await this.postgresConnectionAdapter.query<{ id: number }>(
         `
-          INSERT INTO ${this.table}(total_amount, status, payment_id, customer_id)
-          VALUES($1::numeric, $2::fast_food.order_status_enum, $3::uuid, $4::uuid)
+          INSERT INTO ${this.table}(total_amount, status, payment_id, customer_id, created_at, updated_at)
+          VALUES($1::numeric, $2::fast_food.order_status_enum, $3::uuid, $4::uuid, $5::timestamp, $6::timestamp)
           RETURNING id
         `,
         [
@@ -55,6 +55,8 @@ export class OrderRepository implements IOrderRepository {
           order.getStatus(),
           order.getPayment().getId(),
           customerId,
+          order.getCreatedAt(),
+          order.getUpdatedAt(),
         ],
       )
       return Number(result.rows[0]?.id)
@@ -73,14 +75,23 @@ export class OrderRepository implements IOrderRepository {
     quantity,
     price,
     observation,
+    effectiveDate,
   }: OrderProduct): Promise<void> {
     try {
       await this.postgresConnectionAdapter.query<{ id: number }>(
         `
-          INSERT INTO fast_food.product_order(order_id, product_id, quantity, unit_price, observation)
-          VALUES($1::integer, $2::integer, $3::integer, $4::numeric, $5::text)
+          INSERT INTO fast_food.product_order(order_id, product_id, quantity, unit_price, observation, created_at, updated_at)
+          VALUES($1::integer, $2::integer, $3::integer, $4::numeric, $5::text, $6::timestamp, $7::timestamp)
         `,
-        [orderId, productId, quantity, price, observation],
+        [
+          orderId,
+          productId,
+          quantity,
+          price,
+          observation,
+          effectiveDate,
+          effectiveDate,
+        ],
       )
     } catch (error) {
       console.error(error)
@@ -94,6 +105,7 @@ export class OrderRepository implements IOrderRepository {
   async updateOrderStatus(
     orderId: number,
     status: OrderCurrentStatus,
+    updatedAt: string,
   ): Promise<Order> {
     try {
       const { rows } = await this.postgresConnectionAdapter.query<{
@@ -101,11 +113,11 @@ export class OrderRepository implements IOrderRepository {
         updated_at: string
       }>(
         `
-          UPDATE ${this.table} SET status = $1::fast_food.order_status_enum, updated_at = current_timestamp
-          WHERE id = $2::integer
+          UPDATE ${this.table} SET status = $1::fast_food.order_status_enum, updated_at = $2::timestamp
+          WHERE id = $3::integer
           RETURNING status, updated_at
         `,
-        [status, orderId],
+        [status, updatedAt, orderId],
       )
       if (!rows || !rows.length) return null
       return new Order(

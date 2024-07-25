@@ -15,6 +15,7 @@ import {
   IOrderRepository,
 } from '@core/domain/repositories'
 import { DomainException, ExceptionCause } from '@core/domain/base'
+import { formatDateWithTimezone } from '@core/application/helpers'
 import {
   IMakeCheckoutUseCase,
   MakeCheckoutInput,
@@ -89,13 +90,15 @@ export class MakeCheckoutUseCase implements IMakeCheckoutUseCase {
         ExceptionCause.INVALID_DATA,
       )
     }
-    const currentDate = new Date().toISOString()
+    const currentDate = formatDateWithTimezone(new Date())
     const orderPaymentId = randomUUID()
     const orderPayment = new Payment(
       payment.type,
       PaymentCurrentStatus.PENDENTE,
       currentDate,
       orderPaymentId,
+      currentDate,
+      currentDate,
     )
     await this.paymentRepository.savePayment(orderPayment)
     // TODO: adicionar meio de pagamento nesse ponto futuramente
@@ -110,6 +113,9 @@ export class MakeCheckoutUseCase implements IMakeCheckoutUseCase {
       products,
       orderPayment,
       customer,
+      null,
+      currentDate,
+      currentDate,
     )
     const orderId = await this.orderRepository.saveOrder(order)
     for (const item of orderItems) {
@@ -119,6 +125,7 @@ export class MakeCheckoutUseCase implements IMakeCheckoutUseCase {
         quantity: item.quantity,
         price: item.product.getPrice(),
         observation: item.observation,
+        effectiveDate: currentDate,
       })
     }
     const {

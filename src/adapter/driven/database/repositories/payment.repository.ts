@@ -25,13 +25,14 @@ export class PaymentRepository implements IPaymentRepository {
   }
 
   async savePayment(payment: Payment): Promise<void> {
+    const currentDate = payment.getEffectiveDate()
     try {
       await this.postgresConnectionAdapter.query(
         `
-          INSERT INTO ${this.table}(id, effective_date, type)
-          VALUES($1::uuid, $2::timestamp, $3::fast_food.payment_type_enum)
+          INSERT INTO ${this.table}(id, updated_at, type, effective_date)
+          VALUES($1::uuid, $2::timestamp, $3::fast_food.payment_type_enum, $4::timestamp)
         `,
-        [payment.getId(), payment.getEffectiveDate(), payment.getType()],
+        [payment.getId(), currentDate, payment.getType(), currentDate],
       )
     } catch (error) {
       console.error(error)

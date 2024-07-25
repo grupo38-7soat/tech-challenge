@@ -50,9 +50,11 @@ export type SearchOrdersOutput = {
   id: number
   status: OrderCurrentStatus
   effectiveDate: string
+  updatedAt: string
   totalAmount: number
   paymentId: string
   customerId: string
+  waitingTime: number
 }
 
 export type GetOrderPaymentInput = {

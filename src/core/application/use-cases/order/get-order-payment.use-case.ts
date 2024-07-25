@@ -5,6 +5,7 @@ import {
   GetOrderPaymentOutput,
   IGetOrderPaymentUseCase,
 } from '../types/order'
+import { formatDateWithTimezone } from '@core/application/helpers'
 
 export class GetOrderPaymentUseCase implements IGetOrderPaymentUseCase {
   constructor(private readonly paymentRepository: IPaymentRepository) {}
@@ -30,7 +31,7 @@ export class GetOrderPaymentUseCase implements IGetOrderPaymentUseCase {
       id,
       type,
       status,
-      effectiveDate,
+      effectiveDate: formatDateWithTimezone(new Date(effectiveDate)),
     }
   }
 }

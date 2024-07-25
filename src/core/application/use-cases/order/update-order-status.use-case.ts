@@ -6,6 +6,7 @@ import {
   UpdateOrderStatusInput,
   UpdateOrderStatusOutput,
 } from '../types/order'
+import { formatDateWithTimezone } from '@core/application/helpers'
 
 export class UpdateOrderStatusUseCase implements IUpdateOrderStatusUseCase {
   constructor(private readonly orderRepository: IOrderRepository) {}
@@ -47,6 +48,7 @@ export class UpdateOrderStatusUseCase implements IUpdateOrderStatusUseCase {
     const updatedOrder = await this.orderRepository.updateOrderStatus(
       orderId,
       status,
+      formatDateWithTimezone(new Date()),
     )
     if (!updatedOrder) {
       throw new DomainException(
@@ -58,7 +60,7 @@ export class UpdateOrderStatusUseCase implements IUpdateOrderStatusUseCase {
     return {
       previousStatus,
       currentStatus,
-      updatedAt,
+      updatedAt: formatDateWithTimezone(new Date(updatedAt)),
     }
   }
 }

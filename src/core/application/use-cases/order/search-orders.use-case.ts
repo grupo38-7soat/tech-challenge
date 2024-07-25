@@ -6,6 +6,10 @@ import {
   SearchOrdersInput,
   SearchOrdersOutput,
 } from '../types/order'
+import {
+  getMinutesInterval,
+  formatDateWithTimezone,
+} from '@core/application/helpers'
 
 export class SearchOrdersUseCase implements ISearchOrdersUseCase {
   constructor(private readonly orderRepository: IOrderRepository) {}
@@ -42,15 +46,28 @@ export class SearchOrdersUseCase implements ISearchOrdersUseCase {
     })
     return [...readyOrders, ...inProgressOrders, ...receivedOrders].map(
       order => {
-        const { id, status, effectiveDate, totalAmount, payment, customer } =
-          order.toJson()
-        return {
+        const {
           id,
           status,
           effectiveDate,
           totalAmount,
+          payment,
+          customer,
+          updatedAt,
+        } = order.toJson()
+        const waitingTime = getMinutesInterval(
+          new Date(),
+          new Date(effectiveDate),
+        )
+        return {
+          id,
+          status,
+          effectiveDate: formatDateWithTimezone(new Date(effectiveDate)),
+          totalAmount,
           paymentId: payment.id,
           customerId: customer?.id,
+          updatedAt: formatDateWithTimezone(new Date(updatedAt)),
+          waitingTime,
         }
       },
     )
