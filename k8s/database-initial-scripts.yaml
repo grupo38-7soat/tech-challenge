@@ -1,0 +1,166 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: database-sql
+data:
+  init-db1.sql: |
+    do $$
+    begin
+        if not exists (
+    select
+      1
+    from
+      pg_namespace
+    where
+      nspname = 'fast_food') then
+            create schema fast_food;
+    end if;
+    end
+    $$;
+
+    create table if not exists fast_food.customer (
+        id uuid,
+        name varchar(255) not null,
+        document varchar(11) not null unique,
+        email varchar(255) not null,
+        created_at timestamp default current_timestamp,
+        updated_at timestamp default current_timestamp,
+        constraint pk_customer primary key (id)
+    );
+
+    create type fast_food.payment_type_enum as enum (
+      'DINHEIRO',
+      'CARTAO_CREDITO',
+      'CARTAO_DEBITO',
+      'PIX',
+      'VALE_REFEICAO'
+    );
+
+    create type fast_food.payment_status_enum as enum (
+      'PENDENTE',
+      'AUTORIZADO',
+      'REJEITADO',
+      'REEMBOLSADO'
+    );
+
+    create table if not exists fast_food.payment(
+        id uuid,
+        effective_date timestamp default current_timestamp,
+        type fast_food.payment_type_enum not null,
+        status fast_food.payment_status_enum not null default 'PENDENTE',
+        updated_at timestamp default current_timestamp,
+        constraint pk_payment primary key (id)
+    );
+
+    create type fast_food.order_status_enum as enum (
+      'RECEBIDO',
+      'EM_PREPARO',
+      'PRONTO',
+      'FINALIZADO',
+      'CANCELADO'
+    );
+
+    create table if not exists fast_food.order (
+        id bigserial,
+        customer_id uuid,
+        total_amount numeric(10, 2) not null,
+        status fast_food.order_status_enum not null default 'RECEBIDO',
+        payment_id uuid not null,
+        created_at timestamp default current_timestamp,
+        updated_at timestamp default current_timestamp,
+        constraint pk_order primary key (id),
+        constraint fk_order_customer foreign key (customer_id) references fast_food.customer(id),
+        constraint fk_order_payment foreign key (payment_id) references fast_food.payment(id)
+    );
+
+    create type fast_food.category_enum as enum (
+      'LANCHE',
+      'ACOMPANHAMENTO',
+      'BEBIDA',
+      'SOBREMESA'
+    );
+
+    create table if not exists fast_food.product (
+        id bigserial,
+        name varchar(255) not null,
+        description text not null,
+        price decimal(10, 2) not null,
+        image_links text[],
+        category fast_food.category_enum not null,
+        created_at timestamp default current_timestamp,
+        updated_at timestamp default current_timestamp,
+        constraint pk_product primary key (id)
+    );
+
+    create table if not exists fast_food.product_order (
+        id bigserial,
+        order_id integer not null,
+        product_id integer not null,
+        quantity integer not null,
+        unit_price decimal(10, 2) not null,
+        observation text,
+        created_at timestamp default current_timestamp,
+        updated_at timestamp default current_timestamp,
+        constraint pk_product_order primary key (id),
+        constraint fk_product_order_product foreign key (product_id) references fast_food.product(id),
+        constraint fk_product_order_order foreign key (order_id) references fast_food.order(id)
+    );
+
+  init-db2.sql: |
+    INSERT INTO fast_food.customer (id, name, document, email)
+    VALUES
+    ('a27bf6bc-cd83-4b6c-aed4-9b2427c39964', 'João Silva', '24453923813', 'joao.silva@gmail.com'),
+    ('38d3508e-f74f-4a17-afb8-5ce81cd12717', 'Maria Santos', '53747021816', 'maria.santos@gmail.com'),
+    ('e22e06a7-1d6e-466a-ab15-e302d2a49e9f', 'José Oliveira', '45577575532', 'jose.oliveira@gmail.com'),
+    ('eda1ec61-feaf-40a4-8baf-cf55631f816b', 'Ana Pereira', '06274892907', 'ana.pereira@gmail.com'),
+    ('8224377d-e288-4dbe-ab36-7cf281565492', 'Pedro Costa', '07327066616', 'pedro.costa@gmail.com'),
+    ('47545a82-cade-4e01-8a80-1ade25b461ce', 'Sandra Lima', '35073688708', 'sandra.lima@gmail.com'),
+    ('812447fd-fc68-49fa-9d17-fcf4bb66199b', 'Carlos Ferreira', '19653354116', 'carlos.ferreira@gmail.com'),
+    ('22f816a3-65a8-489b-9144-8c371ac44cf7', 'Fernanda Almeida', '56698356387', 'fernanda.almeida@gmail.com'),
+    ('ae7bd187-f407-4405-a2e6-3f49705585e4', 'Paulo Nunes', '25088143850', 'paulo.nunes@gmail.com'),
+    ('b1896943-9f2f-49a8-863d-d5476ab287de', 'Mariana Rodrigues', '63447281081', 'mariana.rodrigues@gmail.com');
+
+  init-db3.sql: |
+    INSERT INTO fast_food.product (name, description, category, price, image_links)
+    VALUES
+    ('Refrigerante de Cola', 'Lata de refrigerante sabor cola', 'BEBIDA', 5.00, ARRAY['http://exemplo.com/bebida']),
+    ('Refrigerante de Laranja', 'Lata de refrigerante sabor laranja', 'BEBIDA', 5.00, ARRAY['http://exemplo.com/bebida']),
+    ('Refrigerante de Limão', 'Lata de refrigerante sabor limão', 'BEBIDA', 5.00, ARRAY['http://exemplo.com/bebida']),
+    ('Suco de Laranja', 'Copão de suco natural de laranja', 'BEBIDA', 8.00, ARRAY['http://exemplo.com/bebida']),
+    ('Água Mineral', 'Garrafa de água mineral sem gás 500ml', 'BEBIDA', 3.00, ARRAY['http://exemplo.com/bebida']),
+    ('Café Expresso', 'Café expresso curto', 'BEBIDA', 4.00, ARRAY['http://exemplo.com/bebida']),
+    ('Café com Leite', 'Café com leite', 'BEBIDA', 6.00, ARRAY['http://exemplo.com/bebida']),
+    ('Chá de Camomila', 'Chá de camomila quente', 'BEBIDA', 5.00, ARRAY['http://exemplo.com/bebida']),
+    ('Chá Verde Gelado', 'Chá verde gelado com limão', 'BEBIDA', 7.00, ARRAY['http://exemplo.com/bebida']),
+    ('Milkshake de Chocolate', 'Milkshake cremoso de chocolate', 'BEBIDA', 10.00, ARRAY['http://exemplo.com/bebida']);
+
+
+    INSERT INTO fast_food.product (name, description, category, price, image_links)
+    VALUES
+    ('Hambúrguer Clássico', 'Pão, hambúrguer de carne, queijo, alface, tomate e maionese', 'LANCHE', 15.00, ARRAY['http://exemplo.com/lanche']),
+    ('Cheeseburger', 'Pão, hambúrguer de carne, queijo, alface, tomate e maionese', 'LANCHE', 17.00, ARRAY['http://exemplo.com/lanche']),
+    ('Frango Grelhado no Pão', 'Pão, peito de frango grelhado, queijo, alface, tomate e maionese', 'LANCHE', 16.00, ARRAY['http://exemplo.com/lanche']),
+    ('Sanduíche de Presunto e Queijo', 'Pão, presunto, queijo, alface, tomate e maionese', 'LANCHE', 12.00, ARRAY['http://exemplo.com/lanche']),
+    ('Sanduíche Vegetariano', 'Pão, patty de vegetais, queijo, alface, tomate e maionese', 'LANCHE', 14.00, ARRAY['http://exemplo.com/lanche']);
+
+    INSERT INTO fast_food.product (name, description, category, price, image_links)
+    VALUES
+    ('Pizza de Mussarela', 'Molho de tomate, queijo mussarela, azeitonas', 'LANCHE', 30.00, ARRAY['http://exemplo.com/lanche']),
+    ('Pizza de Calabresa', 'Molho de tomate, queijo mussarela, calabresa fatiada, cebola', 'LANCHE', 35.00, ARRAY['http://exemplo.com/lanche']),
+    ('Pizza Margherita', 'Molho de tomate, queijo mussarela, tomate e manjericão', 'LANCHE', 35.00, ARRAY['http://exemplo.com/lanche']),
+    ('Pizza Quatro Queijos', 'Molho de tomate, queijos mussarela, gorgonzola, parmesão e provolone', 'LANCHE', 40.00, ARRAY['http://exemplo.com/lanche']),
+    ('Pizza Vegetariana', 'Molho de tomate, queijo mussarela, pimentão, cebola, tomate e azeitonas', 'LANCHE', 35.00, ARRAY['http://exemplo.com/lanche']);
+
+    INSERT INTO fast_food.product (name, description, category, price, image_links)
+    VALUES
+    ('Bruschetta de Tomate e Manjericão', 'Fatias de pão italiano tostadas com tomate, manjericão e azeite de oliva', 'ACOMPANHAMENTO', 12.00, ARRAY['http://exemplo.com/acomphamento']),
+    ('Carpaccio', 'Finas fatias de carne bovina, servidas com molho de mostarda e alcaparras', 'ACOMPANHAMENTO', 18.00, ARRAY['http://exemplo.com/acomphamento']),
+    ('Batata Frita com Molho Barbecue', 'Porção de batatas fritas crocantes servidas com molho barbecue', 'ACOMPANHAMENTO', 14.00, ARRAY['http://exemplo.com/acomphamento']),
+    ('Coxinha de Frango', 'Porção de coxinhas de frango crocantes', 'ACOMPANHAMENTO', 10.00, ARRAY['http://exemplo.com/acomphamento']),
+    ('Dadinhos de Tapioca', 'Dadinhos de tapioca crocantes servidos com geleia de pimenta', 'ACOMPANHAMENTO', 12.00, ARRAY['http://exemplo.com/acomphamento']);
+
+    INSERT INTO fast_food.product (name, description, category, price, image_links)
+    VALUES
+    ('Sorvete de creme', 'Sorvete de creme servido com calda de chocolate', 'SOBREMESA', 12.00, ARRAY['http://exemplo.com/sobremesa']),
+    ('Sorvete de chocolate', 'Sorvete de chocolate servido com calda quente', 'SOBREMESA', 18.00, ARRAY['http://exemplo.com/sobremesa']),
+    ('Pudim', 'Pudim de leite com calda', 'SOBREMESA', 14.00, ARRAY['http://exemplo.com/sobremesa']);

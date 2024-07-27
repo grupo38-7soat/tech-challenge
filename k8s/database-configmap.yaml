@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tech-challenge-postgres-secret
+  labels:
+    app: tech-challenge-postgres
+data:
+  POSTGRES_USER: tech_challenge
+  POSTGRES_PASSWORD: tech_challenge_123
+  POSTGRES_DB: techchallengedb
