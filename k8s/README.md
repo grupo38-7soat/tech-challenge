@@ -21,7 +21,7 @@
 ❯ kubectl apply -f database-deployment.yaml
 ```
 
-> Observação: as tabelas são criadas e os dados iniciais são populados automaticamente.
+> Observação: as tabelas são criadas automaticamente junto com os dados iniciais.
 
 - Criar o deployment da aplicação:
 
