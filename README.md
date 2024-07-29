@@ -27,26 +27,41 @@ Este projeto está preparado para execução em um ambiente Docker. Portanto, se
 
 Caso não tenha o Docker instalado, siga as instruções para seu sistema operacional na [documentação oficial do Docker](https://docs.docker.com/get-docker/).
 
+# Como executar o projeto usando Kubernetes
 
-## Iniciar a aplicação
+- Fazer build da imagem Docker localmente com o comando abaixo:
 
-Para iniciar os serviços com o docker-compose, utilize o comando abaixo na raiz do repositório do projeto:
-
-
-```sh
-docker compose up -d
+```bash
+❯ docker build -t tech-challenge:latest .
 ```
 
-O Docker compose irá criar 2 containers, sendo o primeiro com o database e o segundo com a nossa aplicação em Node.
+- Caso esteja usando o Kind (https://kind.sigs.k8s.io/) para os testes, execute os passos abaixo:
 
-O container do database será automaticamente inicializado com as tabelas necessárias e alguns dados para testes.
+```bash
+❯ kind create cluster --config=kind-api-cluster.yml
+❯ kind load docker-image tech-challenge:latest --name kind
+```
 
-O container com a aplicação será gerado por uma build usando o `node:20.13.1-alpine` e o mesmo utilizará a porta `3000` para os endpoints.
+- Criar o deployment do database:
 
-Todas as variáveis de ambiente necessárias estão expostas no arquivo `.env`. Nenhuma alteração nesse arquivo é necessária para a total execução da versão 1.0.
+```bash
+❯ kubectl apply -f database-configmap.yaml
+❯ kubectl apply -f database-service.yaml
+❯ kubectl apply -f database-deployment.yaml
+```
 
-Para facilitar a comunicação entre a aplicação e o banco de dados, foi criado uma network no docker-compose.
+> Observação: as tabelas são criadas automaticamente junto com os dados iniciais.
 
+- Criar o deployment da aplicação:
+
+```bash
+❯ kubectl apply -f tech-challenge-configmap.yaml
+❯ kubectl apply -f tech-challenge-service.yaml
+❯ kubectl apply -f tech-challenge-deployment.yaml
+❯ kubectl apply -f tech-challenge-hpa.yaml
+```
+
+- Para verificar se a aplicação está ativa, acesse: http://localhost:31000/api-docs
 ## Desenvolvimento do projeto
 
 ### Diagramas de fluxo
