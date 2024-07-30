@@ -669,7 +669,49 @@
           "Pedido"
         ],
         "summary": "Recebe atualizações do pagamento vindas do Mercado Pago",
-        "operationId": "listenOrderPayment"
+        "operationId": "listenOrderPayment",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListenOrderPaymentRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Informação do status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListenOrderPaymentResponseBody"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorResponse"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -1257,6 +1299,36 @@
                 "example": "1325544717"
               }
             }
+          }
+        }
+      },
+      "ListenOrderPaymentRequestBody": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "description": "Ação do evento recebido",
+            "example": "payment.created"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Id do pagamento do Mercado Pago",
+                "example": "1325544717"
+              }
+            }
+          }
+        }
+      },
+      "ListenOrderPaymentResponseBody": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string",
+            "description": "Mensagem de sucesso",
+            "example": "OK"
           }
         }
       },
