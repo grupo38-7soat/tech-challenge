@@ -104,13 +104,9 @@ export class Order {
   }
 
   private setPayment(value: Payment): void {
-    if (value && value.getPaymentStatus() === PaymentCurrentStatus.PENDENTE) {
-      throw new DomainException(
-        'O pagamento precisa ser aprovado',
-        ExceptionCause.BUSINESS_EXCEPTION,
-      )
+    if (value) {
+      this.payment = value
     }
-    this.payment = value
   }
 
   public getPayment(): Payment {
@@ -138,6 +134,12 @@ export class Order {
   }
 
   public initOrder(): void {
+    if (this.payment.getPaymentStatus() !== PaymentCurrentStatus.AUTORIZADO) {
+      throw new DomainException(
+        'O pedido não pode ser iniciado. Pagamento não autorizado.',
+        ExceptionCause.BUSINESS_EXCEPTION,
+      )
+    }
     this.status.init()
   }
 

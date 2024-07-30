@@ -1,4 +1,4 @@
-import { globalEnvs } from '@adapter/config/envs/global'
+import { globalEnvs } from '@config/envs/global'
 import { Client, QueryResult } from 'pg'
 
 export class PostgresConnectionAdapter {

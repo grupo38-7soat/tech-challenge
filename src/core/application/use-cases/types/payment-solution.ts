@@ -40,6 +40,15 @@ export interface PaymentInput {
   }
 }
 
+export enum ExternalPaymentStatus {
+  pending = 'pending',
+  approved = 'approved',
+  rejected = 'rejected',
+  cancelled = 'cancelled',
+  refunded = 'refunded',
+  charged_back = 'charged_back',
+}
+
 export type PaymentOutput = {
   additional_info: {
     items: Array<{
@@ -76,7 +85,14 @@ export type PaymentOutput = {
   }
   payment_method_id: string
   payment_type_id: string
-  status: string
+  point_of_interaction: {
+    transaction_data: {
+      qr_code: string
+      qr_code_base64: string
+      ticket_url: string
+    }
+  }
+  status: ExternalPaymentStatus
   status_detail: string
   transaction_amount: number
   transaction_amount_refunded: number

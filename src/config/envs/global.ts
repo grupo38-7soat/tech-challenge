@@ -20,6 +20,7 @@ const databaseEnvs = {
 const paymentSolutionEnvs = {
   baseUrl: process.env.MERCADO_PAGO_BASE_URL,
   accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN,
+  webhookUrl: process.env.LISTEN_ORDER_PAYMENT_URL,
 }
 
 export const globalEnvs = {

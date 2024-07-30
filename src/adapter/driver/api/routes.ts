@@ -106,6 +106,16 @@ export const orderRoutes: IRouteProps[] = [
     handler: 'searchOrders',
   },
   {
+    resource: '/pedidos/:id/atualizar-status',
+    method: HttpMethod.PUT,
+    middleware: (
+      _request: ExpressRequest,
+      _response: ExpressResponse,
+      next: ExpressNextFuction,
+    ) => next(),
+    handler: 'updateOrderStatus',
+  },
+  {
     resource: '/pedidos/:id/pagamento',
     method: HttpMethod.GET,
     middleware: (
@@ -116,13 +126,13 @@ export const orderRoutes: IRouteProps[] = [
     handler: 'getOrderPayment',
   },
   {
-    resource: '/pedidos/:id/atualizar-status',
-    method: HttpMethod.PUT,
+    resource: '/pedidos/webhook-pagamento',
+    method: HttpMethod.POST,
     middleware: (
       _request: ExpressRequest,
       _response: ExpressResponse,
       next: ExpressNextFuction,
     ) => next(),
-    handler: 'updateOrderStatus',
+    handler: 'listenOrderPayment',
   },
 ]

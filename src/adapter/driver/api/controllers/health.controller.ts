@@ -1,5 +1,5 @@
 import { Request as ExpressRequest, Response as ExpressResponse } from 'express'
-import { globalEnvs } from '@adapter/config/envs/global'
+import { globalEnvs } from '@config/envs/global'
 import { PostgresConnectionAdapter } from '@adapter/driven/database/postgres-connection.adapter'
 import { IHealthController } from './types/controllers'
 import { HttpResponseHelper } from '../helpers'

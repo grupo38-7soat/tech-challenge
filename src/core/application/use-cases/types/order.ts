@@ -32,6 +32,9 @@ export type MakeCheckoutOutput = {
     id: string
     status: PaymentCurrentStatus
     type: PaymentType
+    qrCode: string
+    ticketUrl: string
+    expirationDate: string
   }
   customer?: {
     id: string
@@ -57,17 +60,6 @@ export type SearchOrdersOutput = {
   waitingTime: number
 }
 
-export type GetOrderPaymentInput = {
-  orderId: number
-}
-
-export type GetOrderPaymentOutput = {
-  id: string
-  status: PaymentCurrentStatus
-  type: PaymentType
-  effectiveDate: string
-}
-
 export type UpdateOrderStatusInput = {
   orderId: number
   status: OrderCurrentStatus
@@ -79,6 +71,23 @@ export type UpdateOrderStatusOutput = {
   updatedAt: string
 }
 
+export type GetOrderPaymentInput = {
+  orderId: number
+}
+
+export type GetOrderPaymentOutput = {
+  id: string
+  status: PaymentCurrentStatus
+  type: PaymentType
+  effectiveDate: string
+  externalId: string
+}
+
+export type ListenOrderPaymentInput = {
+  action: string
+  externalPaymentId: string
+}
+
 export interface IMakeCheckoutUseCase {
   execute(input: MakeCheckoutInput): Promise<MakeCheckoutOutput>
 }
@@ -87,10 +96,14 @@ export interface ISearchOrdersUseCase {
   execute(input: SearchOrdersInput): Promise<SearchOrdersOutput[]>
 }
 
+export interface IUpdateOrderStatusUseCase {
+  execute(input: UpdateOrderStatusInput): Promise<UpdateOrderStatusOutput>
+}
+
 export interface IGetOrderPaymentUseCase {
   execute(input: GetOrderPaymentInput): Promise<GetOrderPaymentOutput>
 }
 
-export interface IUpdateOrderStatusUseCase {
-  execute(input: UpdateOrderStatusInput): Promise<UpdateOrderStatusOutput>
+export interface IListenOrderPaymentUseCase {
+  execute(input: ListenOrderPaymentInput): Promise<void>
 }

@@ -25,6 +25,7 @@ type OrderData = {
   payment_type: PaymentType
   payment_status: PaymentCurrentStatus
   payment_effective_date: string
+  payment_external_id: string
   customer_name: string
   customer_document: string
   customer_email: string
@@ -277,7 +278,72 @@ export class OrderRepository implements IOrderRepository {
     } catch (error) {
       console.error(error)
       throw new DomainException(
-        'Erro ao atualizar o status do pedido',
+        'Erro ao buscar pedido',
+        ExceptionCause.PERSISTANCE_EXCEPTION,
+      )
+    }
+  }
+
+  async findOrderByPaymentId(paymentId: string): Promise<Order> {
+    try {
+      const { rows } = await this.postgresConnectionAdapter.query<OrderData>(
+        `
+          SELECT
+          o.id,
+          o.total_amount,
+          o.status,
+          o.customer_id,
+          o.payment_id,
+          o.created_at AS effective_date,
+          o.updated_at,
+          p.type AS payment_type,
+          p.status AS payment_status,
+          p.effective_date AS payment_effective_date,
+          p.external_id AS payment_external_id,
+          c.name AS customer_name,
+          c.document AS customer_document,
+          c.email AS customer_email
+        FROM
+          ${this.table} o
+        LEFT JOIN
+          fast_food.customer c ON o.customer_id = c.id
+        JOIN
+          fast_food.payment p ON o.payment_id = p.id
+        WHERE p.id = $1::uuid LIMIT 1
+        `,
+        [paymentId],
+      )
+      if (!rows || !rows.length) return null
+      const payment = new Payment(
+        rows[0].payment_type,
+        rows[0].payment_status,
+        rows[0].payment_effective_date,
+        rows[0].payment_id,
+        rows[0].payment_external_id,
+      )
+      let customer = null
+      if (rows[0].customer_id) {
+        customer = new Customer(
+          rows[0].customer_document,
+          rows[0].customer_name,
+          rows[0].customer_email,
+          rows[0].customer_id,
+        )
+      }
+      return new Order(
+        Number(rows[0].total_amount),
+        rows[0].status,
+        [],
+        payment,
+        customer,
+        Number(rows[0].id),
+        rows[0].effective_date,
+        rows[0].updated_at,
+      )
+    } catch (error) {
+      console.error(error)
+      throw new DomainException(
+        'Erro ao buscar pedido',
         ExceptionCause.PERSISTANCE_EXCEPTION,
       )
     }

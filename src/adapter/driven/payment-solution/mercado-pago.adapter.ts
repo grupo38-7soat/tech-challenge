@@ -1,10 +1,10 @@
 import { randomUUID } from 'crypto'
+import { globalEnvs } from '@config/envs/global'
 import {
   IPaymentSolution,
   PaymentInput,
   PaymentOutput,
 } from '@core/application/use-cases'
-import { globalEnvs } from '@adapter/config/envs/global'
 import { HttpClientAdapter } from '../http/http-client.adapter'
 import { HttpStatus } from '@adapter/driver/api/types/http-server'
 
@@ -26,8 +26,10 @@ export class MercadoPagoAdapter implements IPaymentSolution {
         },
       })
     if (status !== HttpStatus.CREATED) {
+      console.log('[MercadoPagoAdapter] Pagamento não pode ser criado')
       return null
     }
+    console.log('[MercadoPagoAdapter] Pagamento criado com sucesso')
     return data
   }
 
@@ -42,6 +44,7 @@ export class MercadoPagoAdapter implements IPaymentSolution {
         },
       },
     })
+    console.log('[MercadoPagoAdapter] Pagamento encontrado com sucesso')
     return data
   }
 }

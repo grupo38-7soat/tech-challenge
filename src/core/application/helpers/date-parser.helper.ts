@@ -17,3 +17,15 @@ export function getMinutesInterval(firstDate: Date, secondDate: Date): number {
   const diffInMinutes = diffInMilliseconds / (1000 * 60)
   return Math.round(diffInMinutes)
 }
+
+export function increaseTimeToDate(minutes: number): string {
+  const currentDatetime = new Date().getTime()
+  const expireDatetime = currentDatetime + minutes * 60000
+  return formatDateWithTimezone(new Date(expireDatetime))
+}
+
+export function decreaseTimeToDate(minutes: number): string {
+  const currentDatetime = new Date().getTime()
+  const expireDatetime = currentDatetime + minutes * 60000 * -1
+  return formatDateWithTimezone(new Date(expireDatetime))
+}

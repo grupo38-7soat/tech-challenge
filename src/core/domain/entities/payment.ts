@@ -21,6 +21,7 @@ export type SerializedPayment = {
   paymentStatus: PaymentCurrentStatus
   effectiveDate: string
   updatedAt: string
+  externalId: string
 }
 
 export class Payment {
@@ -30,16 +31,19 @@ export class Payment {
   private effectiveDate: string
   private createdAt: string
   private updatedAt: string
+  private externalId: string
 
   constructor(
     type: PaymentType,
     currentStatus: PaymentCurrentStatus,
     effectiveDate: string,
     id?: string,
+    externalId?: string,
     createdAt?: string,
     updatedAt?: string,
   ) {
     this.setId(id)
+    this.setExternalId(externalId)
     this.setType(type)
     this.setEffectiveDate(effectiveDate)
     this.setCreatedAt(createdAt)
@@ -55,6 +59,16 @@ export class Payment {
 
   public getId(): string {
     return this.id
+  }
+
+  public setExternalId(externalId: string): void {
+    if (externalId) {
+      this.externalId = externalId
+    }
+  }
+
+  public getExternalId(): string {
+    return this.externalId
   }
 
   private setType(type: PaymentType): void {
@@ -117,6 +131,7 @@ export class Payment {
   public toJson(): SerializedPayment {
     return {
       id: this.id,
+      externalId: this.externalId,
       type: this.type,
       paymentStatus: this.getPaymentStatus(),
       effectiveDate: this.effectiveDate,

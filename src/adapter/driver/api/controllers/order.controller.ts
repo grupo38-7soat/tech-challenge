@@ -1,6 +1,7 @@
 import { Request as ExpressRequest, Response as ExpressResponse } from 'express'
 import {
   IGetOrderPaymentUseCase,
+  IListenOrderPaymentUseCase,
   IMakeCheckoutUseCase,
   ISearchOrdersUseCase,
   IUpdateOrderStatusUseCase,
@@ -13,8 +14,9 @@ export class OrderController implements IOrderController {
   constructor(
     private readonly makeCheckoutUseCase: IMakeCheckoutUseCase,
     private readonly searchOrdersUseCase: ISearchOrdersUseCase,
-    private readonly getOrderPaymentUseCase: IGetOrderPaymentUseCase,
     private readonly updateOrderStatusUseCase: IUpdateOrderStatusUseCase,
+    private readonly getOrderPaymentUseCase: IGetOrderPaymentUseCase,
+    private readonly listenOrderPaymentUseCase: IListenOrderPaymentUseCase,
   ) {}
 
   async makeCheckout(
@@ -49,6 +51,23 @@ export class OrderController implements IOrderController {
     }
   }
 
+  async updateOrderStatus(
+    request: ExpressRequest,
+    response: ExpressResponse,
+  ): Promise<ExpressResponse> {
+    try {
+      const orderId = request.params.id
+      const status = request.body?.status || ''
+      const updatedOrderData = await this.updateOrderStatusUseCase.execute({
+        orderId: Number(orderId),
+        status,
+      })
+      return HttpResponseHelper.onSucess(response, { data: updatedOrderData })
+    } catch (error) {
+      return HttpResponseHelper.onError(response, { error })
+    }
+  }
+
   async getOrderPayment(
     request: ExpressRequest,
     response: ExpressResponse,
@@ -64,18 +83,17 @@ export class OrderController implements IOrderController {
     }
   }
 
-  async updateOrderStatus(
+  async listenOrderPayment(
     request: ExpressRequest,
     response: ExpressResponse,
   ): Promise<ExpressResponse> {
     try {
-      const orderId = request.params.id
-      const status = request.body?.status || ''
-      const updatedOrderData = await this.updateOrderStatusUseCase.execute({
-        orderId: Number(orderId),
-        status,
+      const { action, data } = request.body
+      await this.listenOrderPaymentUseCase.execute({
+        action,
+        externalPaymentId: data?.id,
       })
-      return HttpResponseHelper.onSucess(response, { data: updatedOrderData })
+      return HttpResponseHelper.onSucess(response, { data: 'OK' })
     } catch (error) {
       return HttpResponseHelper.onError(response, { error })
     }

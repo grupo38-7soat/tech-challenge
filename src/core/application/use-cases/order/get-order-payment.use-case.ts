@@ -26,12 +26,19 @@ export class GetOrderPaymentUseCase implements IGetOrderPaymentUseCase {
         ExceptionCause.NOTFOUND_EXCEPTION,
       )
     }
-    const { id, type, paymentStatus: status, effectiveDate } = payment.toJson()
+    const {
+      id,
+      type,
+      paymentStatus: status,
+      effectiveDate,
+      externalId,
+    } = payment.toJson()
     return {
       id,
       type,
       status,
       effectiveDate: formatDateWithTimezone(new Date(effectiveDate)),
+      externalId,
     }
   }
 }

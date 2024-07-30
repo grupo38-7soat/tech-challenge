@@ -1,8 +1,10 @@
+import { globalEnvs } from '@config/envs/global'
 import {
   CreateCustomerUseCase,
   CreateProductUseCase,
   GetCustomerByDocumentUseCase,
   GetOrderPaymentUseCase,
+  ListenOrderPaymentUseCase,
   MakeCheckoutUseCase,
   RemoveProductUseCase,
   SearchOrdersUseCase,
@@ -10,7 +12,6 @@ import {
   UpdateOrderStatusUseCase,
   UpdateProductUseCase,
 } from '@core/application/use-cases'
-import { globalEnvs } from '@adapter/config/envs/global'
 import {
   HealthController,
   CustomerController,
@@ -24,8 +25,14 @@ import { CustomerRepository } from '@adapter/driven/database/repositories'
 import { ProductRepository } from '@adapter/driven/database/repositories/product.repository'
 import { PaymentRepository } from '@adapter/driven/database/repositories/payment.repository'
 import { OrderRepository } from '@adapter/driven/database/repositories/order.repository'
+import { MercadoPagoAdapter } from '@adapter/driven/payment-solution/mercado-pago.adapter'
+import { HttpClientAdapter } from '@adapter/driven/http/http-client.adapter'
 
 const postgresConnectionAdapter = new PostgresConnectionAdapter()
+const httpClientAdapter = new HttpClientAdapter(
+  globalEnvs.paymentSolution.baseUrl,
+)
+const paymentSolution = new MercadoPagoAdapter(httpClientAdapter)
 // repositories
 const customerRepository = new CustomerRepository(postgresConnectionAdapter)
 const productRepository = new ProductRepository(postgresConnectionAdapter)
@@ -45,10 +52,16 @@ const makeCheckoutUseCase = new MakeCheckoutUseCase(
   productRepository,
   paymentRepository,
   orderRepository,
+  paymentSolution,
 )
 const searchOrdersUseCase = new SearchOrdersUseCase(orderRepository)
-const getOrderPaymentUseCase = new GetOrderPaymentUseCase(paymentRepository)
 const updateOrderStatusUseCase = new UpdateOrderStatusUseCase(orderRepository)
+const getOrderPaymentUseCase = new GetOrderPaymentUseCase(paymentRepository)
+const listenOrderPaymentUseCase = new ListenOrderPaymentUseCase(
+  orderRepository,
+  paymentRepository,
+  paymentSolution,
+)
 // controllers
 const healthController = new HealthController(postgresConnectionAdapter)
 const customerController = new CustomerController(
@@ -64,8 +77,9 @@ const productController = new ProductController(
 const orderController = new OrderController(
   makeCheckoutUseCase,
   searchOrdersUseCase,
-  getOrderPaymentUseCase,
   updateOrderStatusUseCase,
+  getOrderPaymentUseCase,
+  listenOrderPaymentUseCase,
 )
 const server: IHttpServer = new ExpressHttpServerAdapter(
   healthController,
