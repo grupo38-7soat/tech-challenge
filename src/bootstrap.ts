@@ -12,6 +12,7 @@ import {
 } from '@core/application/use-cases'
 import { globalEnvs } from '@adapter/config/envs/global'
 import {
+  HealthController,
   CustomerController,
   OrderController,
   ProductController,
@@ -49,6 +50,7 @@ const searchOrdersUseCase = new SearchOrdersUseCase(orderRepository)
 const getOrderPaymentUseCase = new GetOrderPaymentUseCase(paymentRepository)
 const updateOrderStatusUseCase = new UpdateOrderStatusUseCase(orderRepository)
 // controllers
+const healthController = new HealthController(postgresConnectionAdapter)
 const customerController = new CustomerController(
   createCustomerUseCase,
   getCustomerByDocumentUseCase,
@@ -66,6 +68,7 @@ const orderController = new OrderController(
   updateOrderStatusUseCase,
 )
 const server: IHttpServer = new ExpressHttpServerAdapter(
+  healthController,
   customerController,
   productController,
   orderController,

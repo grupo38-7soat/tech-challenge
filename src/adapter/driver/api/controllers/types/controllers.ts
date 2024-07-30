@@ -40,3 +40,10 @@ export interface IOrderController {
     response: ExpressResponse,
   ): Promise<ExpressResponse>
 }
+
+export interface IHealthController {
+  check(
+    request: ExpressRequest,
+    response: ExpressResponse,
+  ): Promise<ExpressResponse>
+}

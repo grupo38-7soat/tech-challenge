@@ -6,6 +6,7 @@ dotenv.config({
 
 const apiEnvs = {
   serverPort: Number(process.env.SERVER_PORT) || 3000,
+  stage: process.env.NODE_ENV,
 }
 
 const databaseEnvs = {
