@@ -8,7 +8,7 @@
   "scripts": {
     "build": "rimraf ./build && tsc && tsc-alias",
     "start:dev": "export NODE_ENV=development && ts-node-dev -r tsconfig-paths/register ./src/bootstrap.ts",
-    "start": "npm run build && node dist/bootstrap.js",
+    "start": "export NODE_ENV=production && npm run build && node dist/bootstrap.js",
     "start:prod": "export NODE_ENV=production && npm start",
     "test": "export NODE_ENV=development && jest --noStackTrace --runInBand --passWithNoTests --silent --forceExit",
     "test:watch": "export NODE_ENV=development && jest --noStackTrace --runInBand --passWithNoTests --verbose --watch",
