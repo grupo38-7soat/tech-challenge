@@ -28,13 +28,13 @@ spec:
             path: /health
             port: 3000
           initialDelaySeconds: 30
-          periodSeconds: 10
+          periodSeconds: 60
         readinessProbe:
           httpGet:
             path: /health
             port: 3000
-          initialDelaySeconds: 5
-          periodSeconds: 10
+          initialDelaySeconds: 15
+          periodSeconds: 55
         resources:
           requests:
             memory: "64Mi"
