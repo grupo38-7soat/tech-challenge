@@ -732,21 +732,6 @@
                 "type": "string",
                 "description": "Ambiente da aplicação",
                 "example": "DEVELOPMENT"
-              },
-              "info": {
-                "type": "object",
-                "properties": {
-                  "database": {
-                    "type": "object",
-                    "properties": {
-                      "status": {
-                        "type": "string",
-                        "description": "Status do banco de dados",
-                        "example": "UP"
-                      }
-                    }
-                  }
-                }
               }
             }
           }
