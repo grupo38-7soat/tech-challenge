@@ -607,7 +607,60 @@
           "Pedido"
         ],
         "summary": "Busca os detalhes do pagamento do pedido",
-        "operationId": "getOrderPayment"
+        "operationId": "getOrderPayment",
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Id do pedido",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Informação do pagamento",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOrderPaymentResponseBody"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorResponse"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/pedidos/webhook-pagamento": {
@@ -1155,6 +1208,53 @@
                 "type": "date",
                 "description": "Data de criação do pedido",
                 "example": "2024-05-28T22:23:31.742Z"
+              }
+            }
+          }
+        }
+      },
+      "GetOrderPaymentResponseBody": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Id do pagamento",
+                "example": "f76408cc-f92a-419f-87f7-8e5fa451e34b"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "PENDENTE",
+                  "AUTORIZADO",
+                  "REJEITADO",
+                  "REEMBOLSADO"
+                ],
+                "description": "Status de pagamento",
+                "example": "PENDENTE"
+              },
+              "type": {
+                "enum": [
+                  "DINHEIRO",
+                  "CARTAO_CREDITO",
+                  "CARTAO_DEBITO",
+                  "PIX",
+                  "VALE_REFEICAO"
+                ],
+                "description": "Tipo de pagamento",
+                "example": "PIX"
+              },
+              "effectiveDate": {
+                "type": "date",
+                "description": "Data de criação do pedido",
+                "example": "2024-05-28T22:23:31.742Z"
+              },
+              "externalId": {
+                "type": "string",
+                "description": "Id do pagamento do Mercado Pago",
+                "example": "1325544717"
               }
             }
           }
