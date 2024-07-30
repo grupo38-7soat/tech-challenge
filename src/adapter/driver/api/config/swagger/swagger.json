@@ -18,6 +18,37 @@
     }
   ],
   "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Valida a saúde da aplicação",
+        "operationId": "check",
+        "responses": {
+          "200": {
+            "description": "Status da aplicação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessHealthCheckResponseBody"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorHealthCheckResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/clientes": {
       "post": {
         "tags": [
@@ -511,6 +542,76 @@
   },
   "components": {
     "schemas": {
+      "SuccessHealthCheckResponseBody": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "description": "Status atual da aplicação",
+                "example": "HEALTH"
+              },
+              "stage": {
+                "type": "string",
+                "description": "Ambiente da aplicação",
+                "example": "DEVELOPMENT"
+              },
+              "info": {
+                "type": "object",
+                "properties": {
+                  "database": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string",
+                        "description": "Status do banco de dados",
+                        "example": "UP"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ErrorHealthCheckResponseBody": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "description": "Status atual da aplicação",
+                "example": "UNHEALTH"
+              },
+              "stage": {
+                "type": "string",
+                "description": "Ambiente da aplicação",
+                "example": "DEVELOPMENT"
+              },
+              "info": {
+                "type": "object",
+                "properties": {
+                  "database": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string",
+                        "description": "Status do banco de dados",
+                        "example": "DOWN"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "CreateCustomerRequestBody": {
         "type": "object",
         "properties": {
