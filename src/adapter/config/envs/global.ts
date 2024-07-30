@@ -17,11 +17,19 @@ const databaseEnvs = {
   password: process.env.DATABASE_PASSWORD,
 }
 
+const paymentSolutionEnvs = {
+  baseUrl: process.env.MERCADO_PAGO_BASE_URL,
+  accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN,
+}
+
 export const globalEnvs = {
   api: {
     ...apiEnvs,
   },
   database: {
     ...databaseEnvs,
+  },
+  paymentSolution: {
+    ...paymentSolutionEnvs,
   },
 }
