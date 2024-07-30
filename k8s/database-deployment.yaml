@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tech-challenge-postgres-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tech-challenge-postgres
+  template:
+    metadata:
+      labels:
+        app: tech-challenge-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: 'postgres:16'
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: tech-challenge-postgres-secret
+          volumeMounts:
+            - name: sql-files
+              mountPath: /docker-entrypoint-initdb.d
+      volumes:
+        - name: sql-files
+          configMap:
+            name: database-sql

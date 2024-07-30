@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tech-challenge-secret
+  labels:
+    app: tech-challenge
+data:
+  DATABASE_HOST: tech-challenge-postgres
+  DATABASE_PORT: "5432"
+  DATABASE_USER: tech_challenge
+  DATABASE_PASSWORD: tech_challenge_123
+  DATABASE_NAME: techchallengedb
