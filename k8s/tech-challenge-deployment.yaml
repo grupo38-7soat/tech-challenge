@@ -25,13 +25,13 @@ spec:
             name: tech-challenge-secret
         livenessProbe:
           httpGet:
-            path: /api-docs
+            path: /health
             port: 3000
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
           httpGet:
-            path: /api-docs
+            path: /health
             port: 3000
           initialDelaySeconds: 5
           periodSeconds: 10
