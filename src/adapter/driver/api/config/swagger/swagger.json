@@ -538,6 +538,86 @@
           }
         }
       }
+    },
+    "/pedidos/{id}/atualizar-status": {
+      "put": {
+        "tags": [
+          "Pedido"
+        ],
+        "summary": "Atualiza o status do pedido",
+        "operationId": "updateOrderStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Id do pedido",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStatusRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Informação do status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateStatusResponseBody"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pedidos/{id}/pagamento": {
+      "get": {
+        "tags": [
+          "Pedido"
+        ],
+        "summary": "Busca os detalhes do pagamento do pedido",
+        "operationId": "getOrderPayment"
+      }
+    },
+    "/pedidos/webhook-pagamento": {
+      "post": {
+        "tags": [
+          "Pedido"
+        ],
+        "summary": "Recebe atualizações do pagamento vindas do Mercado Pago",
+        "operationId": "listenOrderPayment"
+      }
     }
   },
   "components": {
@@ -1019,6 +1099,62 @@
                   "description": "Id do cliente",
                   "example": "1c014ba2-4000-4d40-be1e-352e29d07d89"
                 }
+              }
+            }
+          }
+        }
+      },
+      "UpdateStatusRequestBody": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "RECEBIDO",
+              "EM_PREPARO",
+              "PRONTO",
+              "FINALIZADO",
+              "CANCELADO"
+            ],
+            "description": "Status anterior do pedido",
+            "example": "RECEBIDO"
+          }
+        }
+      },
+      "UpdateStatusResponseBody": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "previousStatus": {
+                "type": "string",
+                "enum": [
+                  "RECEBIDO",
+                  "EM_PREPARO",
+                  "PRONTO",
+                  "FINALIZADO",
+                  "CANCELADO"
+                ],
+                "description": "Status anterior do pedido",
+                "example": "RECEBIDO"
+              },
+              "currentStatus": {
+                "type": "string",
+                "enum": [
+                  "RECEBIDO",
+                  "EM_PREPARO",
+                  "PRONTO",
+                  "FINALIZADO",
+                  "CANCELADO"
+                ],
+                "description": "Status atual do pedido",
+                "example": "EM_PREPARO"
+              },
+              "updatedAt": {
+                "type": "date",
+                "description": "Data de criação do pedido",
+                "example": "2024-05-28T22:23:31.742Z"
               }
             }
           }
