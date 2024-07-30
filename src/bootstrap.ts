@@ -63,7 +63,7 @@ const listenOrderPaymentUseCase = new ListenOrderPaymentUseCase(
   paymentSolution,
 )
 // controllers
-const healthController = new HealthController(postgresConnectionAdapter)
+const healthController = new HealthController()
 const customerController = new CustomerController(
   createCustomerUseCase,
   getCustomerByDocumentUseCase,
