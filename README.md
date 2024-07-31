@@ -1,27 +1,86 @@
-# tech-challenge - Grupo 38-7SOAT
+# Tech-Challenge - Grupo 38-7SOAT
 
-## Iniciar a aplicação
+Este é o projeto desenvolvido durante a fase I e atualizado durante a fase II do curso de pós-graduação em arquitetura de software da FIAP.
 
-Para iniciar os serviços com o docker-compose, utilize o comando abaixo na raiz do repositório do projeto:
+Membros do grupo:
+* Ketlin Fabri dos Santos – RM35453
+* Lucas Antonio dos Santos – RM354629
+* Luan Lopes da Silva – RM356317
+* Matheus Akio Santos Ishiguro – RM354952
 
-```sh
-docker compose up -d
+## Propósito do projeto
+
+Implementar um sistema de gerenciamento de pedidos para uma empresa do setor alimentício.
+
+## Stack utilizada
+
+* Node.js v18
+* TypeScript
+* Postgresql
+* Docker
+* Kubernetes
+
+
+## Instalação do projeto
+
+Este projeto está preparado para execução em um ambiente Docker. Portanto, será necessária apenas a instalação do Docker e/ou Kubernetes, sem a necessidade de instalar o projeto ou o banco de dados PostgreSQL manualmente.
+
+Caso não tenha o Docker instalado, siga as instruções para seu sistema operacional na [documentação oficial do Docker](https://docs.docker.com/get-docker/).
+
+# Como executar o projeto usando Kubernetes
+
+- Fazer build da imagem Docker localmente com o comando abaixo:
+
+```bash
+❯ docker build -t tech-challenge:latest .
 ```
 
-O Docker compose irá criar 2 containers, sendo o primeiro com o database e o segundo com a nossa aplicação em Node.
+- Caso esteja usando o Kind (https://kind.sigs.k8s.io/) para os testes, execute os passos abaixo:
 
-O container do database será automaticamente inicializado com as tabelas necessárias e alguns dados para testes.
+```bash
+❯ kind create cluster --config=kind-api-cluster.yml
+❯ kind load docker-image tech-challenge:latest --name kind
+```
 
-O container com a aplicação será gerado por uma build usando o `node:20.13.1-alpine` e o mesmo utilizará a porta `3000` para os endpoints.
+- Criar o deployment do database:
 
-Todas as variáveis de ambiente necessárias estão expostas no arquivo `.env`. Nenhuma alteração nesse arquivo é necessária para a total execução da versão 1.0.
+```bash
+❯ kubectl apply -f database-configmap.yaml
+❯ kubectl apply -f database-service.yaml
+❯ kubectl apply -f database-deployment.yaml
+```
 
-Para facilitar a comunicação entre a aplicação e o banco de dados, foi criado uma network no docker-compose.
+> Observação: as tabelas são criadas automaticamente junto com os dados iniciais.
+
+- Criar o deployment da aplicação:
+
+```bash
+❯ kubectl apply -f tech-challenge-configmap.yaml
+❯ kubectl apply -f tech-challenge-service.yaml
+❯ kubectl apply -f tech-challenge-deployment.yaml
+❯ kubectl apply -f tech-challenge-hpa.yaml
+```
+
+- Para verificar se a aplicação está ativa, acesse: http://localhost:31000/api-docs
+## Desenvolvimento do projeto
+
+### Diagramas de fluxo
+
+Foram utilizadas técnicas de Domain Driven Design para definição dos fluxos:
+
+- Identificação do objeto principal e organização dos eventos
+![Identificação do objeto principal e organização dos eventos](doc/image/Pedido-objetivo.jpg)
+
+- Eventos Pivotais
+![Eventos Pivotais](doc/image/Pedido-EventosPivotais.jpg)
+
+- Diagrama de infraestrutura
+![Diagrama de infraestrutura](doc/image/Pedido-infraestrutura.jpg)
+
+- Requisitos de negócios
+![Requisitos de negócios](doc/image/Pedidos_Fase2.drawio.png)
+
+Todos os diagramas apresentados estão disponíveis no [Miro](https://miro.com/app/board/uXjVKUHWBkY=/?share_link_id=42148422473).
 
 ## Swagger
-
 Todos os endpoints estão disponíveis para consulta via [Swagger](http://localhost:3000/api-docs/).
-
-## Miro
-
-A documentação do sistema (DDD) com Event Storming está disponível no [Miro](https://miro.com/app/board/uXjVKUHWBkY=/?share_link_id=42148422473).
