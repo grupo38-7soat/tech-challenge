@@ -2,8 +2,9 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
-      "@core/*": ["core/*"],
-      "@adapter/*": ["adapter/*"]
+      "@adapter/*": ["adapter/*"],
+      "@config/*": ["config/*"],
+      "@core/*": ["core/*"]
     }
   }
 }

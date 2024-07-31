@@ -20,6 +20,7 @@ type SerializedOrder = {
   customer?: SerializedCustomer
   items: SerializedProduct[]
   payment: SerializedPayment
+  updatedAt?: string
 }
 
 export class Order {
@@ -103,13 +104,9 @@ export class Order {
   }
 
   private setPayment(value: Payment): void {
-    if (value.getPaymentStatus() === PaymentCurrentStatus.PENDENTE) {
-      throw new DomainException(
-        'O pagamento precisa ser aprovado',
-        ExceptionCause.BUSINESS_EXCEPTION,
-      )
+    if (value) {
+      this.payment = value
     }
-    this.payment = value
   }
 
   public getPayment(): Payment {
@@ -136,6 +133,28 @@ export class Order {
     return this.updatedAt
   }
 
+  public initOrder(): void {
+    if (this.payment.getPaymentStatus() !== PaymentCurrentStatus.AUTORIZADO) {
+      throw new DomainException(
+        'O pedido não pode ser iniciado. Pagamento não autorizado.',
+        ExceptionCause.BUSINESS_EXCEPTION,
+      )
+    }
+    this.status.init()
+  }
+
+  public cancelOrder(): void {
+    this.status.cancel()
+  }
+
+  public doneOrder(): void {
+    this.status.ready()
+  }
+
+  public finishOrder(): void {
+    this.status.finish()
+  }
+
   public toJson(): SerializedOrder {
     return {
       id: this.id,
@@ -144,7 +163,8 @@ export class Order {
       status: this.getStatus(),
       customer: this.customer ? this.customer.toJson() : null,
       items: [],
-      payment: this.payment.toJson(),
+      payment: this.payment ? this.payment.toJson() : null,
+      updatedAt: this.updatedAt,
     }
   }
 }

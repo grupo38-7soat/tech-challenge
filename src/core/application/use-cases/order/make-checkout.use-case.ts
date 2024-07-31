@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto'
+import { globalEnvs } from '@config/envs/global'
 import {
   Customer,
   Order,
@@ -16,10 +17,15 @@ import {
 } from '@core/domain/repositories'
 import { DomainException, ExceptionCause } from '@core/domain/base'
 import {
+  formatDateWithTimezone,
+  increaseTimeToDate,
+} from '@core/application/helpers'
+import {
   IMakeCheckoutUseCase,
   MakeCheckoutInput,
   MakeCheckoutOutput,
 } from '../types/order'
+import { IPaymentSolution, PaymentInput } from '../types/payment-solution'
 
 type OrderItem = {
   product: Product
@@ -33,6 +39,7 @@ export class MakeCheckoutUseCase implements IMakeCheckoutUseCase {
     private readonly productRepository: IProductRepository,
     private readonly paymentRepository: IPaymentRepository,
     private readonly orderRepository: IOrderRepository,
+    private readonly paymentSolution: IPaymentSolution,
   ) {}
 
   async execute({
@@ -89,27 +96,48 @@ export class MakeCheckoutUseCase implements IMakeCheckoutUseCase {
         ExceptionCause.INVALID_DATA,
       )
     }
-    const currentDate = new Date().toISOString()
+    if (payment.type !== PaymentType.PIX) {
+      throw new DomainException(
+        'Opção não implementada',
+        ExceptionCause.BUSINESS_EXCEPTION,
+      )
+    }
+    const currentDate = formatDateWithTimezone(new Date())
     const orderPaymentId = randomUUID()
+    const mountedPayment = this.mountExternalPayment(
+      orderAmount,
+      orderItems,
+      payment,
+      orderPaymentId,
+      customer,
+    )
+    const externalPayment =
+      await this.paymentSolution.createPayment(mountedPayment)
+    if (!externalPayment) {
+      throw new DomainException(
+        'Não foi possível processar o pedido',
+        ExceptionCause.BUSINESS_EXCEPTION,
+      )
+    }
     const orderPayment = new Payment(
       payment.type,
       PaymentCurrentStatus.PENDENTE,
       currentDate,
       orderPaymentId,
+      externalPayment.id.toString(),
+      currentDate,
+      currentDate,
     )
     await this.paymentRepository.savePayment(orderPayment)
-    // TODO: adicionar meio de pagamento nesse ponto futuramente
-    orderPayment.authorizePayment()
-    await this.paymentRepository.updatePaymentStatus(
-      orderPaymentId,
-      orderPayment.getPaymentStatus(),
-    )
     const order = new Order(
       orderAmount,
       OrderCurrentStatus.RECEBIDO,
       products,
       orderPayment,
       customer,
+      null,
+      currentDate,
+      currentDate,
     )
     const orderId = await this.orderRepository.saveOrder(order)
     for (const item of orderItems) {
@@ -119,6 +147,7 @@ export class MakeCheckoutUseCase implements IMakeCheckoutUseCase {
         quantity: item.quantity,
         price: item.product.getPrice(),
         observation: item.observation,
+        effectiveDate: currentDate,
       })
     }
     const {
@@ -138,6 +167,10 @@ export class MakeCheckoutUseCase implements IMakeCheckoutUseCase {
         id: orderPaymentId,
         status: serializedPayment.paymentStatus,
         type: serializedPayment.type,
+        qrCode: externalPayment.point_of_interaction.transaction_data.qr_code,
+        ticketUrl:
+          externalPayment.point_of_interaction.transaction_data.ticket_url,
+        expirationDate: mountedPayment.date_of_expiration,
       },
       customer: serializedCustomer
         ? {
@@ -158,5 +191,49 @@ export class MakeCheckoutUseCase implements IMakeCheckoutUseCase {
       }
     })
     return products
+  }
+
+  private mountExternalPayment(
+    orderAmount: number,
+    items: OrderItem[],
+    payment: MakeCheckoutInput['payment'],
+    orderPaymentId: string,
+    customer?: Customer,
+  ): PaymentInput {
+    return {
+      transaction_amount: orderAmount,
+      description: `Pagamento ${orderPaymentId}`,
+      installments: 1,
+      notification_url: globalEnvs.paymentSolution.webhookUrl,
+      payment_method_id: payment.type.toLowerCase(),
+      date_of_expiration: increaseTimeToDate(30),
+      additional_info: {
+        items: items.map(item => ({
+          id: item.product.getId().toString(),
+          quantity: item.quantity,
+          description: item.observation,
+          title: item.product.getName(),
+          unit_price: item.product.getPrice(),
+          picture_url: item.product.getImageLinks()[0] || '',
+          category_id: item.product.getCategory(),
+        })),
+        payer: customer
+          ? {
+              first_name: customer.getName(),
+            }
+          : undefined,
+      },
+      payer: customer
+        ? {
+            email: customer.getEmail(),
+            entity_type: 'individual',
+            type: 'customer',
+            identification: {
+              type: 'CPF',
+              number: customer.getDocument(),
+            },
+          }
+        : undefined,
+    }
   }
 }

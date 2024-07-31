@@ -8,35 +8,35 @@ abstract class OrderStatus {
 
   receive(): void {
     throw new DomainException(
-      'Status de pagamento inválido',
+      'Status não permitido',
       ExceptionCause.BUSINESS_EXCEPTION,
     )
   }
 
   init(): void {
     throw new DomainException(
-      'Status de pagamento inválido',
+      'Status não permitido',
       ExceptionCause.BUSINESS_EXCEPTION,
     )
   }
 
   ready(): void {
     throw new DomainException(
-      'Status de pagamento inválido',
+      'Status não permitido',
       ExceptionCause.BUSINESS_EXCEPTION,
     )
   }
 
   finish(): void {
     throw new DomainException(
-      'Status de pagamento inválido',
+      'Status não permitido',
       ExceptionCause.BUSINESS_EXCEPTION,
     )
   }
 
   cancel(): void {
     throw new DomainException(
-      'Status de pagamento inválido',
+      'Status não permitido',
       ExceptionCause.BUSINESS_EXCEPTION,
     )
   }

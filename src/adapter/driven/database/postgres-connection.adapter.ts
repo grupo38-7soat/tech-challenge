@@ -1,4 +1,4 @@
-import { globalEnvs } from '@adapter/config/envs/global'
+import { globalEnvs } from '@config/envs/global'
 import { Client, QueryResult } from 'pg'
 
 export class PostgresConnectionAdapter {
@@ -34,5 +34,20 @@ export class PostgresConnectionAdapter {
     const result = await this.client.query(sqlQuery, params)
     await this.destroy()
     return result
+  }
+
+  async checkDatabase(): Promise<boolean> {
+    try {
+      await this.connect()
+      const result = await this.query('SELECT 1', [])
+      await this.destroy()
+      if (result.rowCount === 1) {
+        return true
+      }
+      return false
+    } catch (error) {
+      console.error(`[Database] ${error.message}`)
+      return false
+    }
   }
 }

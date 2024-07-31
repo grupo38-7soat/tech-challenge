@@ -6,6 +6,7 @@ dotenv.config({
 
 const apiEnvs = {
   serverPort: Number(process.env.SERVER_PORT) || 3000,
+  stage: process.env.NODE_ENV,
 }
 
 const databaseEnvs = {
@@ -16,11 +17,20 @@ const databaseEnvs = {
   password: process.env.DATABASE_PASSWORD,
 }
 
+const paymentSolutionEnvs = {
+  baseUrl: process.env.MERCADO_PAGO_BASE_URL,
+  accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN,
+  webhookUrl: process.env.LISTEN_ORDER_PAYMENT_URL,
+}
+
 export const globalEnvs = {
   api: {
     ...apiEnvs,
   },
   database: {
     ...databaseEnvs,
+  },
+  paymentSolution: {
+    ...paymentSolutionEnvs,
   },
 }

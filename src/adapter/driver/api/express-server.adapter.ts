@@ -6,14 +6,21 @@ import {
   ICustomerController,
   IProductController,
   IOrderController,
+  IHealthController,
 } from './controllers/types/controllers'
-import { customerRoutes, productRoutes, orderRoutes } from './routes'
+import {
+  customerRoutes,
+  productRoutes,
+  orderRoutes,
+  healthRoutes,
+} from './routes'
 
 export class ExpressHttpServerAdapter implements IHttpServer {
   app: Express
   router: Router
 
   constructor(
+    private readonly healthController: IHealthController,
     private readonly customerController: ICustomerController,
     private readonly productController: IProductController,
     private readonly orderController: IOrderController,
@@ -26,10 +33,24 @@ export class ExpressHttpServerAdapter implements IHttpServer {
   }
 
   private configRoutes(): void {
+    this.configHealthRoutes()
     this.configCustomerRoutes()
     this.configProductRoutes()
     this.configOrderRoutes()
     this.app.use(this.router)
+  }
+
+  private configHealthRoutes(): void {
+    healthRoutes.forEach(route => {
+      console.log(
+        `[HttpServer] Rota ${route.method.toUpperCase()} ${route.resource}`,
+      )
+      this.router[route.method](
+        route.resource,
+        route.middleware,
+        this.healthController[route.handler].bind(this.healthController),
+      )
+    })
   }
 
   private configCustomerRoutes(): void {

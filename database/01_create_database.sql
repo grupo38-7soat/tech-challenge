@@ -43,6 +43,7 @@ create table if not exists fast_food.payment(
     type fast_food.payment_type_enum not null,
     status fast_food.payment_status_enum not null default 'PENDENTE',
     updated_at timestamp default current_timestamp,
+    external_id varchar,
     constraint pk_payment primary key (id)
 );
 

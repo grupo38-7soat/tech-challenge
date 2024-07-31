@@ -5,6 +5,19 @@ import {
 } from 'express'
 import { HttpMethod, IRouteProps } from './types/http-server'
 
+export const healthRoutes: IRouteProps[] = [
+  {
+    resource: '/health',
+    method: HttpMethod.GET,
+    middleware: (
+      _request: ExpressRequest,
+      _response: ExpressResponse,
+      next: ExpressNextFuction,
+    ) => next(),
+    handler: 'check',
+  },
+]
+
 export const customerRoutes: IRouteProps[] = [
   {
     resource: '/clientes',
@@ -91,5 +104,35 @@ export const orderRoutes: IRouteProps[] = [
       next: ExpressNextFuction,
     ) => next(),
     handler: 'searchOrders',
+  },
+  {
+    resource: '/pedidos/:id/atualizar-status',
+    method: HttpMethod.PUT,
+    middleware: (
+      _request: ExpressRequest,
+      _response: ExpressResponse,
+      next: ExpressNextFuction,
+    ) => next(),
+    handler: 'updateOrderStatus',
+  },
+  {
+    resource: '/pedidos/:id/pagamento',
+    method: HttpMethod.GET,
+    middleware: (
+      _request: ExpressRequest,
+      _response: ExpressResponse,
+      next: ExpressNextFuction,
+    ) => next(),
+    handler: 'getOrderPayment',
+  },
+  {
+    resource: '/pedidos/webhook-pagamento',
+    method: HttpMethod.POST,
+    middleware: (
+      _request: ExpressRequest,
+      _response: ExpressResponse,
+      next: ExpressNextFuction,
+    ) => next(),
+    handler: 'listenOrderPayment',
   },
 ]
