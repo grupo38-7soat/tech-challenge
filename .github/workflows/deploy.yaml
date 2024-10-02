@@ -29,6 +29,7 @@ jobs:
 
       - name: Kube Apply
         run: |
+          kubectl apply -f k8s/tech-challenge-namespace.yaml
           kubectl apply -f k8s/database-configmap.yaml
           kubectl apply -f k8s/database-service.yaml
           kubectl apply -f k8s/database-deployment.yaml
