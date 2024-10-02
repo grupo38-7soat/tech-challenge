@@ -3,7 +3,6 @@ name: Deploy EKS
 on:
   push:
     branches:
-      - main
 
 env:
   REGION_DEFAULT: "us-east-1"
