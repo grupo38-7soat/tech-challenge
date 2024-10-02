@@ -5,7 +5,6 @@ Este é o projeto desenvolvido durante a fase I e atualizado durante a fase II d
 Membros do grupo:
 * Ketlin Fabri dos Santos – RM35453
 * Lucas Antonio dos Santos – RM354629
-* Luan Lopes da Silva – RM356317
 * Matheus Akio Santos Ishiguro – RM354952
 
 ## Propósito do projeto
