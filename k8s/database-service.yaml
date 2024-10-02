@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: tech-challenge-postgres
+  namespace: tech-challenge
   labels:
     app: tech-challenge-postgres
 spec:
