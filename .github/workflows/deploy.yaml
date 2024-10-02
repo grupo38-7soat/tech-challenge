@@ -1,0 +1,38 @@
+name: Deploy EKS
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  REGION_DEFAULT: "us-east-1"
+  CLUSTER_NAME: "TECH-CHALLENGE-FAST-FOOD"
+
+jobs:
+  deploy:
+    name: Deploy AWS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: AWS Configure
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.REGION_DEFAULT }}
+
+      - name: Update Kube Config
+        run: aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.REGION_DEFAULT }}
+
+      - name: Kube Apply
+        run: |
+          kubectl apply -f k8s/database-configmap.yaml
+          kubectl apply -f k8s/database-service.yaml
+          kubectl apply -f k8s/database-deployment.yaml
+          kubectl apply -f k8s/tech-challenge-configmap.yaml
+          kubectl apply -f k8s/tech-challenge-service.yaml
+          kubectl apply -f k8s/tech-challenge-deployment.yaml
+          kubectl apply -f k8s/tech-challenge-hpa.yaml
